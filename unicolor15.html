@@ -1,0 +1,340 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="Content-Style-Type" content="text/css" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Single suit of land mines</title>
+<script type="text/javascript" src="jquery.min.js"></script>
+<script type="text/javascript" src="../kappa12/jMah_v130.js"></script>
+<script type="text/javascript" src="unicolor15.js"></script>
+<style type="text/css">
+body {
+  font-family: arial;
+}
+h2{
+  margin: 3px;
+  padding: 3px;
+  font-size: 30pt;
+}
+h3{
+  margin: 2px;
+  padding: 2px;
+  font-size: 20pt;
+  clear:both;
+}
+h4 {
+  margin: 0px;
+  padding: 0px;
+  clear:both;
+}
+#game {
+  float:left;
+  width: 320px;
+  margin-right: 10px;
+  //margin: 0 auto;  
+}
+#titlebox, #presentation {
+  clear:both;
+  width:100%;
+  display:table;
+  height: 300px;
+}
+#titlebox, #config {
+  background-color: #09d;
+}
+#presentation, #config {}
+#title {
+  display: table-cell;
+  font-family: arial;
+  text-align: center;
+  width: 100%;
+  vertical-align: middle;
+}
+input.ui {
+  font-size: 16pt;
+  border:black 1px solid;
+  margin: 2px;
+  width: 70px;
+}
+.leftstatus{ float:left;  }
+.rightstatus{ float:right;  }
+#command{
+  height:30pt;
+}
+#message{
+  background:#ccc; 
+  padding:10px;
+  height: 50px;
+}
+#user_handset li, .makehand .name, .turn .name{
+  width:100px; 
+  padding:2px; 
+  float:left;  
+  list-style-type:none; 
+}
+.turn .river { 
+  width:200px; 
+  padding:2px; 
+  float:left;
+  list-style-type:none; 
+}
+.river {
+  border: gray 1px solid;
+}
+.discard {
+  text-align: right;
+}
+hr{
+ clear:both;
+ border: 2px solid #932;
+ height: 0;
+ margin: 0;
+ padding: 0;
+}
+
+.handset, #input_column { clear:both; }
+#discard0 li, #dealt li{
+  //padding: 25px 25px;
+  list-style-type: none;
+  float:left;
+  width: 30px;
+  font: bold 40px/40px arial;
+  height:40px;
+  margin: 0 1px 1px 0;
+  text-decoration: none;
+  background:#CCC;
+  border:#222 1px solid;
+  text-align:center;
+  cursor:pointer
+}
+ul, ol{
+  margin-left:.3em;
+  padding-left:1em;
+}
+
+.p{
+  border-collapse: collapse;
+  margin:2px;
+}
+.p th{
+  padding: 3px;
+  text-align: center;
+  vertical-align: middle;
+  font-weight:normal;
+  background-color: #eee;
+  border: 1px solid black;
+}
+.p td{
+  padding: 3px;
+  //background-color: #fff;
+  border: 1px solid black;
+  text-align: right;
+}
+.man { color: #c00; }
+.pin { color: #00f; }
+.sou { color: #080; }
+.nw { white-space: nowrap; }
+
+</style>
+</head>
+
+<body>
+<div id="main">
+<div id="game">
+<div id="header">
+<div class="leftstatus">
+ <h3 id="subtitle"></h3>
+</div><!-- class="leftstatus" -->
+<div class="rightstatus">
+<input type="button" id="show_rule" name="rule_button" value="ルール説明"><br>
+<span id="phase"></span>
+</div>
+</div>
+<div id="titlebox">
+<div id="title">
+<img src="./haiga/reach.png" alt="立直棒">
+<img 
+src="./haiga/ton.gif" alt="ton" height=24 width=18><img 
+src="./haiga/nan.gif" alt="nan" height=24 width=18><img 
+src="./haiga/sha.gif" alt="sha" height=24 width=18><img 
+src="./haiga/pei.gif" alt="pei" height=24 width=18><img 
+src="./haiga/hak.gif" alt="hak" height=24 width=18><img 
+src="./haiga/hat.gif" alt="hat" height=24 width=18><img 
+src="./haiga/chu.gif" alt="chu" height=24 width=18><img 
+src="./haiga/back.gif" alt="■" height=24 width=18>
+<h2>地雷一色</h2>
+<img 
+src="./haiga/1m.gif" alt="1m" height=24 width=18><img 
+src="./haiga/2m.gif" alt="2m" height=24 width=18><img 
+src="./haiga/3m.gif" alt="3m" height=24 width=18><img 
+src="./haiga/4m.gif" alt="4m" height=24 width=18><img 
+src="./haiga/5m.gif" alt="5m" height=24 width=18><img 
+src="./haiga/6m.gif" alt="6m" height=24 width=18><img 
+src="./haiga/7m.gif" alt="7m" height=24 width=18><img 
+src="./haiga/8m.gif" alt="8m" height=24 width=18><img 
+src="./haiga/9m.gif" alt="9m" height=24 width=18><br>
+<img 
+src="./haiga/1p.gif" alt="1p" height=24 width=18><img 
+src="./haiga/2p.gif" alt="2p" height=24 width=18><img 
+src="./haiga/3p.gif" alt="3p" height=24 width=18><img 
+src="./haiga/4p.gif" alt="4p" height=24 width=18><img 
+src="./haiga/5p.gif" alt="5p" height=24 width=18><img 
+src="./haiga/6p.gif" alt="6p" height=24 width=18><img 
+src="./haiga/7p.gif" alt="7p" height=24 width=18><img 
+src="./haiga/8p.gif" alt="8p" height=24 width=18><img 
+src="./haiga/9p.gif" alt="9p" height=24 width=18><br>
+<img 
+src="./haiga/1s.gif" alt="1s" height=24 width=18><img 
+src="./haiga/2s.gif" alt="2s" height=24 width=18><img 
+src="./haiga/3s.gif" alt="3s" height=24 width=18><img 
+src="./haiga/4s.gif" alt="4s" height=24 width=18><img 
+src="./haiga/5s.gif" alt="5s" height=24 width=18><img 
+src="./haiga/6s.gif" alt="6s" height=24 width=18><img 
+src="./haiga/7s.gif" alt="7s" height=24 width=18><img 
+src="./haiga/8s.gif" alt="8s" height=24 width=18><img 
+src="./haiga/9s.gif" alt="9s" height=24 width=18>
+</div><!-- id="title"-->
+</div><!-- id="titlebox"-->
+<div id="presentation" style="display:none;">
+<div id="make_hands">
+ <div id="user_handset">
+  <li id="stat_p1"></li>
+  <li id="stat_p2"></li>
+  <li id="stat_p0"></li>
+  <h4>手牌</h4>
+  <div id="handset" style="clear:both; height:60px;"></div>
+ </div>
+ <h4>配牌</h4>
+ <div id="dealt"><ol style="height:120px;"></ol></div><!-- id="dealt"-->
+ <div id="input_column">
+  <input type="button" id="start" name="st_button"  class="ui" value="Set"> 
+  <input type="button" id="clear" class="ui" value="Clear">
+  <input type="button" id="sort" class="ui" value="Sort">
+ </div><!-- id="input_column" -->
+</div><!-- id="make_hands"-->
+
+<div id="discard_tiles" style="clear:both;">
+<div id="p1" class="turn"><li class="name"></li><li class="river"></li><div class="handset"></div><div class="discard"></div><hr></div>
+<div id="p2" class="turn"><li class="name"></li><li class="river"></li><div class="handset"></div><div class="discard"></div><hr></div>
+<div id="p0" class="turn"><li class="name"></li><li class="river"></li><div class="handset"></div>
+<div id="askron"> 和了する?
+<input type="button" class="ui" id="ron"   value="Yes">
+<input type="button" class="ui" id="cancel" value="No"></div><hr></div>
+
+<h4>打牌候補</h4>
+<div id="discard0"><ol style="height:120px;"></ol></div>
+</div>
+</div><!-- id="presentation" -->
+<div id="message">(画面クリックで開始)</div>
+</div><!-- id="game"-->
+
+<div id="sidebox" style="float:left; width:320px; display:none;">
+ <div id="result"></div>
+</div><!-- id="sidebox"-->
+<div id="ranking" style="float:left;"></div>
+<div id="debug" style="float:left;"></div>
+</div><!-- id="main"-->
+
+<div id="rule" style=" display:none; background:#cccccc; padding:10px; clear:both;">
+<form method="post" onsubmit="return false;">
+<input type="button" id="hide_rule" name="rule_button" value="戻る">
+</form>
+<h3>[目的]</h3>
+<p>ヒトがイカとタコに勝つ。</p>
+
+<h3>[ゲームの進行]</h3>
+<ol>
+<li><b>配牌</b>：
+  プレイヤ3名にそれぞれ下表のように各色の数牌16枚・10枚・10枚と字牌9枚が配られる。
+  <table class="p">
+    <tr>
+      <th class="nw">プレイヤ<br><span style="font-size:80%;">(ランダム)</span></th>
+      <th>萬子</th><th>筒子</th><th>索子</th><th>字牌</th><th>計</th>
+    </tr>
+    <tr>
+      <td>タコ[萬]</td>
+      <td><span class="man">16</span></td><td>10</td><td>10</td><td><span class="man">9</span></td>
+      <td><span class="man">配牌25</span> + <span class="nw">打牌候補20</span></td>
+    </tr>
+    <tr>
+      <td>イカ[筒]</td>
+      <td>10</td><td><span class="pin">16</span></td><td>10</td><td><span class="pin">9</span></td>
+      <td><span class="pin">配牌25</span> + <span class="nw">打牌候補20</span></td>
+    </tr>
+    <tr>
+      <td>ヒト[索]</td>
+      <td>10</td><td>10</td><td><span class="sou">16</span></td><td><span class="sou">9</span></td>
+      <td><span class="sou">配牌25</span> + <span class="nw">打牌候補20</span></td>
+    </tr>
+    <tr>
+      <td>計</td><td>36</td><td>36</td><td>36</td><td>27</td><td>135</td>
+    </tr>
+  </table> 
+  <ul>
+    <li>このうち数牌16枚と字牌9枚の計25枚を「配牌」、2色の数牌10枚ずつを「打牌候補」と呼ぶ。</li>
+    <li>誰にも配られない字牌1枚は使用しない。</li>
+  </ul>
+  <br>
+</li>
+<li><b>手作り</b>：
+  180秒間。配牌25枚のうち13枚を選び出して聴牌形をつくる。
+  <ul>
+    <li>配牌は単色数牌16枚と字牌9枚から成る。そのため必ず清一色か混一色がつく。</li>
+    <li>手作りで使わなかった字牌は打牌候補に追加される。</li>
+  </ul>
+<br>
+</li>
+<li><b>打ち合い</b>：
+  15巡。打牌候補20枚と余った字牌を1枚ずつ各プレイヤが順番に捨てる。
+  <ul>
+    <li>打ち合い開始時点で、最多29枚・最少20枚の打牌候補がある。</li>
+    <li>打牌候補の枚数は常に公開される。</li>
+  </ul>
+  <br>
+    
+<li><b>和了</b>：
+打牌されたものが和了牌ならロンする(される)。
+  <ul>
+    <li>和了牌でないものでロンすると<b>錯和になる</b>ので注意。</li>
+    <li>和了牌を見逃したり自分の和了牌に含まれる字牌を切ったりするとフリテン(=和了放棄)になる。</li>
+  </ul>
+</li>
+</ol>
+
+<h3>[TIPS]</h3>
+<ul>
+  <li>上記のように言葉だけで説明しようとすると何かややこしい。やってみればわかる。</li>
+  <li>イカとタコは他人の手を覗くようなイカサマをしていないので安心してほしい。</li>
+  <li>打牌候補の枚数は推理の材料として活用してほしい。</li>
+  <li>180秒以内に13枚を選択できなかった場合も和了放棄になる。打牌候補は数牌のみ20枚。</li>
+  <li> よく使う多面張：<ul>
+      <li>2223[3], 2223456[5], 2223456789[6]</li>
+      <li>23456[3], 2344567[3], 2344567888[6]</li>
+      <li>2223444[5], 2223456777[8], 1112345678999[9]</li>
+    </ul>
+</ul>
+<h3>[ルール]</h3>
+<ul>
+ <li>開始時50000点で箱割れあり。半荘戦(南3局まで)。延長戦なし。南3トップ親の和了やめなし。</li>
+ <li>東家和了で連荘。1本場ごとに1000点増収。本場が増えてもルール変動なし。流局時総流れ。立直棒の供託収支なし。</li>
+ <li>ダブロンあり。
+ <li>北は常に客風牌。
+ <li>東家の錯和は12000点オール、南家・西家の錯和は8000点オール。</li>
+ <li>採用役：<br><span id="yakulist0"></span></li>
+<ul>
+ <li>ないやつ：<span id="yakulist1"></span><!-- 自摸、人和、W立直、三色、三槓子、四槓子、搶槓、嶺上、国士、四喜和、字一色、清老頭--></li>
+ <li>あるやつ：<!--大車輪-->百万石、三風刻</li>
+ <li>定義が違うやつ：牌底(=15巡目に和了したもの)</li>
+</ul>
+</ul>
+<h3>[ネットランキング]</h3>
+<ul>
+ <li>未定</li>
+</ul>
+</div>
+<div style="clear:both; padding-top:2px;">
+<hr>
+Ver 0.96 / 動作確認：Firefox25.0 &amp; Chrome31.0 (on WinXP, Android4.0, Lubuntu12.04)
+</div>
+</body>

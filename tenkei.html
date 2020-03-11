@@ -1,0 +1,174 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=euc-jp" />
+<meta http-equiv="Content-Style-Type" content="text/css" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>-</title>
+<script type="text/javascript" src="jquery-1.2.6.js"></script>
+<script type="text/javascript" src="jTen.js"></script>
+<script type="text/javascript" src="jMah.js"></script>
+<link rel="stylesheet" type="text/css" href="tenkei.css">
+</style>
+</head>
+
+<body>
+<div id="main">
+<div id="game">
+<div id="titlebox">
+<div id="title">
+<img src="./haiga/reach.png" alt="立直棒">
+<img 
+src="./haiga/ton.gif" alt="ton" height=24 width=18><img 
+src="./haiga/nan.gif" alt="nan" height=24 width=18><img 
+src="./haiga/sha.gif" alt="sha" height=24 width=18><img 
+src="./haiga/pei.gif" alt="pei" height=24 width=18><img 
+src="./haiga/hak.gif" alt="hak" height=24 width=18><img 
+src="./haiga/hat.gif" alt="hat" height=24 width=18><img 
+src="./haiga/chu.gif" alt="chu" height=24 width=18><img 
+src="./haiga/back.gif" alt="■" height=24 width=18>
+<h2>何点問題</h2>
+<img 
+src="./haiga/1m.gif" alt="1m" height=24 width=18><img 
+src="./haiga/2m.gif" alt="2m" height=24 width=18><img 
+src="./haiga/3m.gif" alt="3m" height=24 width=18><img 
+src="./haiga/4m.gif" alt="4m" height=24 width=18><img 
+src="./haiga/5m.gif" alt="5m" height=24 width=18><img 
+src="./haiga/6m.gif" alt="6m" height=24 width=18><img 
+src="./haiga/7m.gif" alt="7m" height=24 width=18><img 
+src="./haiga/8m.gif" alt="8m" height=24 width=18><img 
+src="./haiga/9m.gif" alt="9m" height=24 width=18><br>
+<img 
+src="./haiga/1p.gif" alt="1p" height=24 width=18><img 
+src="./haiga/2p.gif" alt="2p" height=24 width=18><img 
+src="./haiga/3p.gif" alt="3p" height=24 width=18><img 
+src="./haiga/4p.gif" alt="4p" height=24 width=18><img 
+src="./haiga/5p.gif" alt="5p" height=24 width=18><img 
+src="./haiga/6p.gif" alt="6p" height=24 width=18><img 
+src="./haiga/7p.gif" alt="7p" height=24 width=18><img 
+src="./haiga/8p.gif" alt="8p" height=24 width=18><img 
+src="./haiga/9p.gif" alt="9p" height=24 width=18><br>
+<img 
+src="./haiga/1s.gif" alt="1s" height=24 width=18><img 
+src="./haiga/2s.gif" alt="2s" height=24 width=18><img 
+src="./haiga/3s.gif" alt="3s" height=24 width=18><img 
+src="./haiga/4s.gif" alt="4s" height=24 width=18><img 
+src="./haiga/5s.gif" alt="5s" height=24 width=18><img 
+src="./haiga/6s.gif" alt="6s" height=24 width=18><img 
+src="./haiga/7s.gif" alt="7s" height=24 width=18><img 
+src="./haiga/8s.gif" alt="8s" height=24 width=18><img 
+src="./haiga/9s.gif" alt="9s" height=24 width=18>
+</div>
+</div>
+<div id="config" style="font-size:14pt; font-family:Arial;">
+<h3>練習モード</h3>
+<div style="float:left; width:50%; padding:0px 10px;">
+<label for="option1"><input type="radio" name="config" value="1" id="option1">LEVEL 1</label><br>
+<label for="option2"><input type="radio" name="config" value="2" id="option2">LEVEL 2</label><br>
+<label for="option3"><input type="radio" name="config" value="3" id="option3">LEVEL 3</label><br>
+<label for="option4"><input type="radio" name="config" value="4" id="option4">LEVEL 4</label><br>
+<label for="option5"><input type="radio" name="config" value="5" id="option5">LEVEL 5</label><br>
+<label for="option0"><input type="radio" name="config" value="-1" id="option0" checked>ランダム</label>
+</div>
+<div style="padding:3px;">
+<label for="nolimit"><input type="checkbox" name="active1" id="nolimit">時間無制限</label><br>
+<label for="ansopt" ><input type="checkbox" name="active4" id="ansopt">選択肢つき</label><br>
+<label for="ansfu"  ><input type="checkbox" name="active2" id="ansfu">翻/符で解答</label><br>
+<label for="opt_debug"><input type="checkbox" name="active3" id="opt_debug">でばぐ</label>
+</div>
+</div>
+<div id="presentation">
+ <div class="leftstatus" id="number">
+  <u>LEVEL <span id="level">1</span></u><br>
+  Clear: <span id="clear">0 / 5</span>
+ </div><!-- id="number" -->
+ <div class="rightstatus" id="survive">☆☆☆☆</div>
+ <div id="quiz">
+  <div id="fieldplate">東場</div>
+  <div id="dora">
+  <table class="wanpai">
+  <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+  <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+  </table>
+  </div><div id="wangpai">王牌：</div>
+  <div id="card">東家</div>
+  <div id="furo">副露</div>
+ </div>
+</div><!-- id="presentation" -->
+<div id="inputform">
+<div id="command">
+モード：<select name="level_select" id="level_select">
+<option value="0">本番モード</option>
+<option value="1">練習モード</option>
+</select>
+</div><!-- id="command" -->
+<div id="input_column">
+ <form method="post" name="start" onsubmit="state_machine(); return false;">
+  <input type="text" value="" name="inp_ans" id="inp_ans"  class="ui" istyle=4 maxlength=10>
+ </form>
+ <div id="submit_button">
+  <input type="button" id="start" name="st_button"  class="ui" value="開始(Enter)"> 
+ </div><!-- id="submit_button" -->
+</div><!-- id="input_column" -->
+<div id="ft_column">
+ <div id="ft"><label for="ansopth"><input type="checkbox" id="ansopth">選択肢つき</label></div>
+ <input type="button" id="show_rule" name="rule_button" value="ルール説明">
+</div><!-- id="ft_column" -->
+</div><!-- id="inputform" -->
+</div><!-- id="game"-->
+<div id="sidebox" style="float:left; width:320px; display:none;">
+ <div id="tenkey">
+<h4 id="title_kb" style="float:left; margin-right:1em;">タッチパッド用キーボード</h4>
+<div style="font-size:10pt;" id="note_kb">(PCからは使えません)</div>
+<div style="clear:both;" class="calc">
+ <li>1</li><li>2</li><li>3</li><li>4</li><li>5</li>
+ <li>6</li><li>7</li><li>8</li><li>9</li><li>0</li>
+ <li>/</li><li>BS</li><li>Clear</li><li>Enter</li>
+ </div><!-- class="calc"-->
+ </div><!-- id="tenkey"-->
+ <div id="result"></div>
+</div><!-- id="sidebox"-->
+<div id="ranking" style="float:left;"></div>
+</div><!-- id="main"-->
+
+<div id="rule" style=" display:none; background:#cccccc; padding:10px; clear:both;">
+<form method="post" onsubmit="return false;">
+<input type="button" id="hide_rule" name="rule_button" value="戻る">
+</form>
+<h3>[目的]</h3>
+麻雀の和了り手の点数を当てる。
+<h3>[ゲームの進行]</h3>
+<ol>
+  <li> <b>聴牌形</b>：5秒間。聴牌形とともに、場・家・立直/ダマなど状況表示。この間に未来を予測せよ。</li>
+  <li> <b>和了形</b>：15秒間。和了牌とツモ/ロンを表示。テキストエリアに点数を入力せよ。</li>
+  <li> <b>正解発表</b>：悔い改めよ。</li>
+</ol>
+<h3>[入力方法]</h3>
+<ul>
+ <li>末尾の「00」を抜いてもOK。子の満貫ロンなら「80」でも「8000」でも正解。</li>
+ <li>子のツモ和了時には支払いを[子・親]の順で答える。 満貫なら「20 40」でも「20/40」でも何か適当な記号が間に入ってれば正解。</li>
+</ul>
+<h3>[TIPS]</h3>
+<ul>
+ <li>テキストエリアにフォーカスしておけばキーボードのみでゲーム進行できる。</li>
+ <li>点数入力後は何もせずとも時が満ちれば採点は正しく行われる。慌てるな。</li>
+</ul>
+<h3>[ルール]</h3>
+<ul>
+ <li>採用役：<br><span id="yakulist"></span></li>
+ <li>4翻30符は満貫ではない。</li>
+ <li>3倍満は11翻・12翻。</li>
+ <li>ダブ東・ダブ南の雀頭は4符(中算子法)。</li>
+</ul>
+<h3>[ネットランキング]</h3>
+<ul>
+ <li>対象は、時間制限つき・昇級モード。各レベル5問正解で昇級。</li>
+ <li>レベル5をクリアするか4問ミスするとゲーム終了。終了時にランキング10位以内ならば登録することができる。</li>
+ <li>レベル5クリア者は1年、その他の以外のランク登録者は2ヶ月(60日)でランキングから除籍となる。
+</ul>
+</div>
+<div style="clear:both; padding-top:2px;">
+<hr>
+Ver1.31 / 動作確認：Firefox27.0 &amp; Chrome33.0 (on WinXP, Android4.0, Lubuntu12.04)
+</div>
+</body>

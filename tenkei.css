@@ -1,0 +1,179 @@
+body {
+  font-family: arial;
+}
+h2{
+  margin: 3px;
+  padding: 3px;
+  font-family: arial;
+  font-size: 30pt;
+}
+h3{
+  margin: 2px;
+  padding: 2px;
+  font-family: arial;
+  font-size: 20pt;
+}
+h4 {
+  margin: 0px;
+  padding: 0px;
+}
+#game {
+  float:left;
+  width: 320px;
+  margin-right: 10px;
+  //margin: 0 auto;  
+}
+#titlebox, #presentation, #config {
+  clear:both;
+  width:100%;
+  display:table;
+  height: 180px;
+}
+#titlebox, #config {
+  background-color: #0c6;
+}
+#quiz {
+  clear:both;
+  padding:5px;
+  background-color: #0c6;
+  //height: 150px;
+}
+#presentation, #config {
+  display:none;
+}
+#tenkey {
+  padding: 0px;
+  width: 320px;
+  display:none;
+}
+#title {
+  display: table-cell;
+  font-family: arial;
+  text-align: center;
+  width: 100%;
+  vertical-align: middle;
+}
+input.ui {
+  font-size: 180%;
+  border:black 1px solid;
+  margin: 2px;
+  width: 180px;
+}
+.redbold{
+  color:red; 
+  font-weight:bold; 
+  font-size:120%;
+}
+.leftstatus{
+  font-family: Arial; 
+  float:left;  
+  //height:2em;
+}
+.rightstatus{
+  font-family: Arial;
+  font-weight: bold;
+  float:right;  
+  //height:2em;
+  font-size:16pt;
+}
+#command{
+  height:30pt;
+}
+#inputform{
+  background:#ccc; 
+  padding:10px;
+}
+
+table.r { 
+    border: 2px solid black;
+    margin: 6px;
+    padding: 2px;
+    border-collapse: collapse;
+    empty-cells: show;
+}
+table.r tr {
+    border:2px solid black;
+    //border-color: #999999;
+}
+table.r td {
+    border: 2px solid black;
+    padding: 6px;
+}
+.calc li{
+  //padding: 25px 25px;
+  list-style-type: none;
+  float:left;
+  width: 60px;
+  font: bold 16px/60px arial;
+  height:60px;
+  margin: 1px;
+  text-decoration: none;
+  background:#CCC;
+  border:#DDD 1px outset;
+  text-align:center;
+  cursor:pointer
+}
+#tenkey:after{
+  background-color:red;
+  clear:left;
+}
+.calc li:active{
+  background:#888888;
+}
+table.wanpai {
+  border-collapse: collapse;
+  empty-cells:show;
+}
+table.wanpai tbody tr{
+  height:26px;
+}
+table.wanpai tbody tr td{
+  padding:0;
+  margin:0;
+  line-height: 80%;
+  border: 0px none red; 
+}
+#level_select {
+  font-size:150%;
+}
+#fieldplate {
+  float:left;
+  color:white; 
+  font-weight:bold; 
+  border: solid 1px black; 
+  padding:2px; 
+  background: #ff7700;
+}
+#ft {
+  height:60px;
+}
+#input_column{
+  float:left;
+  //width:180px;
+  //background:#ccf;
+}
+#ft_column {
+  //float:right;
+  text-align:center;
+  //width:105px;
+  //background:#fcc;
+}
+#dora, #wangpai {
+  padding:3px;
+  color: white;
+  background: green;
+  float:right;
+  height: 50px;
+}
+#card {
+  clear: both;
+  height: 50px;
+}
+#furo {
+  //background: #cc9;
+  text-align:right;
+  height: 25px;
+}
+#result {
+  clear:both;
+}

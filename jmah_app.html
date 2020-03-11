@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>-</title>
+  <script type="text/javascript" src="jMah.js"></script>
+  <script type="text/javascript" src="jmah_app.js"></script>
+<style type="text/css">
+h2 {
+  font-size: 18pt;
+}
+h2, h3, h4 {
+  padding:1px;
+  margin: 4px 0;
+}
+table.r { 
+    border: 2px solid black;
+    margin: 6px;
+    padding: 2px;
+    border-collapse: collapse;
+    empty-cells: show;
+}
+table.r tr {
+    border:2px solid black;
+    border-color: #999999;
+}
+table.r td {
+    border: 2px solid black;
+    padding: 6px;
+}
+.h li, #aghi li{
+  list-style-type: none;
+  float:left;
+  width: 30px;
+  font: bold 40px/40px arial;
+  height:40px;
+  margin: 0 1px 1px 0;
+  text-decoration: none;
+  background:#6a6;
+  border:#222 1px solid;
+  text-align:center;
+  cursor:pointer
+}
+hr {
+ clear:both;
+ border: 1px solid #585;
+ height: 0;
+ margin: 1 0;
+ padding: 0;
+}
+.tehai {
+  white-space: nowrap;
+}
+input[type=button] {
+  font-family: Arial;
+  font-size: 12pt;
+  border:black 1px solid;
+  margin: 2px;
+}
+.ui0 {
+  border: #050 1px solid;
+  margin: 2px;
+}
+#mentz {
+  border:#050 1px solid;
+  padding: 5px;
+  min-height: 27px;
+  background:#6a6;
+}
+.br {
+  width:100%; 
+  height:0px; 
+  clear:both;
+}
+#calc {
+  background:#66aa66;
+  padding:10px; 
+  float:left; 
+  width:320px; 
+  display:none;
+}
+#help {
+  background:#ccddcc;
+  padding:10px; 
+  display:none; 
+}
+.checklist {
+  border: 1px;
+  margin: 0 1em 1em 0;
+  float:left;
+}
+#edit_button {
+  display: none;
+}
+#ui {
+  background:#cccccc; padding:10px; width:320px; float:left; margin: 0 3px 3px 0;
+}
+.tile {
+  display:inline-block; overflow:hidden; width:18px; height:24px; position:relative;
+}
+.tile img {
+   position:relative;
+}
+</style>
+</head>
+<body>
+  <h2>得点計算機</h2>
+  <div id="ui">
+    <form name="hai">
+      <select class="ui0" name="ba">
+        <option value="0">東</option>
+        <option value="1">南</option>
+        <option value="2">西</option>
+        <option value="3">北</option>
+      </select>
+      場
+      <select class="ui0" name="ie">
+        <option value="0">東</option>
+        <option value="1">南</option>
+        <option value="2">西</option>
+        <option value="3">北</option>
+      </select>
+      家
+      <select class="ui0" name="tsumo">
+        <option value="0">ロン</option>
+        <option value="1">ツモ</option>
+        <option value="2">牌底ロン</option>
+        <option value="3">牌底ツモ</option>
+        <option value="4">搶槓ロン</option>
+        <option value="5">嶺上ツモ</option>
+      </select>
+      <select class="ui0" name="reach">
+        <option value="0">ダマ</option>
+        <option value="1">立直</option>
+        <option value="2">立直一発</option>
+        <option value="3">W立直</option>
+        <option value="4">W立直一発</option>
+      </select>
+      <input type="text" name="tsumi" class="ui0" value="0" size=3 />本場 /
+      ドラ：<input type="text" name="dora" class="ui0" value="0" size=3 />枚
+      <hr />
+      <div class="h"></div>
+      <div>
+        <div class="br"></div>
+        <label for="dn"><input type="radio" name="type" value="0" id="dn" checked />単牌</label>
+        <label for="ms"><input type="radio" name="type" value="1" id="ms" />明順</label>
+        <label for="mg"><input type="radio" name="type" value="2" id="mg" />明刻</label>
+        <label for="mk"><input type="radio" name="type" value="3" id="mk" />明槓</label>
+        <label for="ak"><input type="radio" name="type" value="4" id="ak"/>暗槓</label>
+      </div>
+   </form>
+<hr />
+<div style="min-height: 35px;">
+  <b>手牌：</b>
+  <span id="edit_button">
+    <input type="button" value="Sort"  onclick="$sorthi()" />
+    <input type="button" value="Clear" onclick="$formclear()" />
+  </span>
+</div>
+<div id="mentz"></div>
+<hr />
+<span id="command">和了形または聴牌形を入力してください。</span>
+<span id="calc_button"></span>
+</div>
+<div id="calc">
+  <div id="aghi"></div>
+  <b>計算結果：</b>
+  <div id="result"></div>
+</div>
+<div class="br"></div>
+<input type="button" id="hide_rule" name="rule_button" onclick="$toggle_help()" value="ルール設定" />
+<div id="help">
+  <h3>[ルール]</h3>
+  <h4>採用役</h4>
+  <div id="yakulist"></div>
+  <div class="br"></div>
+  <h4>その他</h4>
+  <form name="rule">
+    <ul>
+      <li><input type="checkbox" name="mangan77" />切り上げ満貫</li>
+      <li><input type="checkbox" name="triple" />3倍満は10翻から</li>
+      <li><input type="checkbox" name="chuzan" />ダブ東・ダブ南の雀頭は4符</li>
+      <li><input type="checkbox" name="pinzumo" />平和ツモなし</li>
+      <li><input type="checkbox" name="kuipinfu" />喰い平和型は20符</li>
+      <li><input type="checkbox" name="hypaethral" />青天井方式</li>
+    </ul>
+  </form>
+  <h3>[リンク]</h3>
+  <ul>
+    <li><a href="jmah_readme.html">技術資料</a></li>
+  </ul>
+</div>
+
+</body>

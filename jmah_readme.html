@@ -1,0 +1,445 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="Content-Style-Type" content="text/css" />
+<title>-</title>
+<script type="text/javascript" src="jMah.js"></script>
+<style>
+table.r { 
+    border: 2px solid black;
+    margin: 6px;
+    padding: 2px;
+    border-collapse: collapse;
+    empty-cells: show;
+}
+table.r tr {
+    border:2px solid black;
+    //border-color: #999999;
+}
+table.r td {
+    border: 2px solid black;
+    padding: 6px;
+}
+body {
+ font-size: 10pt;
+ font-family: Arial;
+}
+h2 {
+ clear:both;
+ background-color: #f99;
+}
+h3 {
+ clear:both;
+ background-color: #fcc;
+}
+pre {
+ border:1px gray solid;
+ background-color:#ffe; 
+ padding:3px;
+ margin:3px;
+}
+.input, .code, .method {
+  font-family: monospace;
+}
+ul.input { list-style-type: circle; /* 2階層目 */ }
+.tile {
+  display:inline-block; overflow:hidden; width:18px; height:24px; position:relative;
+}
+.tile img {
+   position:relative;
+}
+</style>
+<script><!--
+$J.hitag = function(hi)
+{
+    if (hi < 0 || 34 <= hi) hi = 34;
+
+    var hinamej = [
+        "一萬","二萬","三萬","四萬","五萬","六萬","七萬","八萬","九萬",
+        "一筒","二筒","三筒","四筒","五筒","六筒","七筒","八筒","九筒",
+        "一索","二索","三索","四索","五索","六索","七索","八索","九索",
+        "東","南","西","北","白","發","中"
+    ];
+
+    var x = (hi % 9);
+    var y = (hi - x) / 9;
+    var img = {
+        style: ["left:" + (-x * 18) + 'px', "top:" + (-y * 24) + "px"].join(";"),
+        src: "haiga.png",
+        alt: hinamej[hi] || "■",
+    };
+
+    var $img = "<img " + Object.keys(img).map(key => key + "=" + img[key]).join(" ") + ">";
+    return '<span class="tile">' + $img + "</span>";
+};
+--></script>
+</head>
+
+<body>
+<h1>jMah.jsについて</h1>
+
+得点計算用ライブラリ<a href="jMah.js">jMah.js</a>の解説。
+というか、自分で作っておいて使い方を忘れるので、メモ。
+
+<h2>使い方</h2>
+<p>
+最もシンプルな例を以下に示す。
+</p>
+<pre style="float:left;">
+&lt;script type="text/javascript" src="jMah.js"&gt;&lt;/script&gt;
+&lt;script type="text/javascript"&gt;
+var HandObj = new HandSet();
+HandObj.hai = [<span style="color: red;">
+  $J.m1, $J.m1, $J.m1, $J.m2, $J.m3, $J.m4, $J.m5, 
+  $J.m5, $J.m6, $J.m7, $J.m8, $J.m9, $J.m9, $J.m9</span>
+]; // 九蓮宝燈
+
+var CalcObj = new HandCalc();
+CalcObj.ba_kz = <span style="color: red;">1</span>; // 場 [0=東, 1=南, 2=西, 3=北]
+CalcObj.ch_kz = <span style="color: red;">2</span>; // 家 [0=東, 1=南, 2=西, 3=北]
+CalcObj.tsumo = <span style="color: red;">0</span>; // 和了り方 [0=ロン, 1=ツモ, 2=牌底ロン, 3=牌底ツモ, 4=搶槓, 5=嶺上ツモ]
+CalcObj.reach = <span style="color: red;">0</span>; // 立直 [0=ダマ, 1=立直, 2=立直一発, 3=W立直, 4=W立直一発]
+CalcObj.tsumi = <span style="color: red;">1</span>; // 積み棒
+CalcObj.dora  = <span style="color: red;">0</span>; // ドラ枚数
+CalcObj.aghi  = <span style="color: red;">$J.m5</span>; // 和了牌: 五萬
+
+var ResObj  = new JangResult();
+ResObj.run(HandObj, CalcObj);
+document.write(ResObj.result_table());
+&lt;/script&gt;
+</pre>
+
+<div style="border:1px gray solid; background-color:#ffe; padding:3px; margin:3px;float:left;">
+[動作結果]
+<script type="text/javascript"><!--
+var HandObj = new HandSet();
+HandObj.hai = [$J.m1,$J.m1,$J.m1,$J.m2,$J.m3,$J.m4,$J.m5,$J.m5,$J.m6,$J.m7,$J.m8,$J.m9,$J.m9,$J.m9];
+
+var CalcObj = new HandCalc();
+CalcObj.ba_kz = 1;
+CalcObj.ch_kz = 2;
+CalcObj.tsumo = 0;
+CalcObj.reach = 0;
+CalcObj.tsumi = 1;
+CalcObj.dora  = 0;
+CalcObj.aghi  = $J.m5;
+
+var ResObj = new JangResult();
+ResObj.run(HandObj, CalcObj);
+document.write(ResObj.result_table());
+-->
+</script>
+</div>
+<p style="clear:both;">シンプルとか言いつつ複雑な感じに見える。要は赤字のところを変えればいいだけ。</p>
+
+<h2>オブジェクトの解説</h2>
+<p>
+設計が見にくいが何とか。各オブジェクトを単体で使うことがなければ特にこの節を読む必要はない。
+</p>
+<h3>enum的な何か</h3>
+<ul class="input">
+  <li>$J.m1 ～ $J.m9, $J.s1 ～ $J.s9, $J.p1 ～ $J.p9, $J.ton, $J.nan, $J.sha, $J.pei, $J.hak, $J.hat, $J.chu // 各牌(実質0..33)</li>
+  <li>$J.type.chi, $J.type.shun, $J.type.twin, $J.type.pon, $J.type.anko, $J.type.kan. $J.type.ankan // "明順","暗順","対子","明刻","暗刻","明槓","暗槓"(実質0..6)</li>
+</ul>
+
+<h3>HandSet</h3>
+<p>
+手牌を格納する。メンバは以下。<br>
+基本的には、<span>this.hai</span>のいずれかに門前牌を、<span>this.n</span>に副露牌を入力するだけでよい。
+
+<ul class="input">
+ <li class="input">this.hai = []; <br> 門前牌。[$J.m1, $J.s1, $J.p1, $J.ton, $J.hak ...] などと入力する。
+ <li class="input">this.n   = []; <br> 副露牌。[[$J.m1, $J.type.pon], [$J.m4, $J.type.chi], ...] などと入力する。(チーは先頭牌で表現する)
+</ul>
+<ul class="method">
+  <li>this.split(is_all);
+    <br>haiとnを面子に切る。和了形になっていれば true を返す。引数 is_all = true で全通りの切り方を検出する。
+    </li>
+  <li>this.ments(); 
+    <br>上記メソッドで検出された面子の切り方を得る。以下のような n×5×2 の配列で得られる。
+<pre style="border:1px gray solid; background-color:#ffe; padding:3px;">
+this.ments() = [
+  [ [$J.m4, $J.type.twin], [$J.m5, $J.type.shun],  [$J.m5, $J.type.shun], [$J.chu, $J.type.kan], [$J.hat, $J.type.pon] ],
+  [ [$J.m7, $J.type.twin], [$J.m4, $J.type.shun],  [$J.m4, $J.type.shun], [$J.chu, $J.type.kan], [$J.hat, $J.type.pon] ]
+];
+// 四四五五六六七七 [中中中中] [發發發] (順子は先頭牌で表現する)
+</pre></li>
+ <li>this.is_valid();         // haiとnとが少牌・多牌していないかをチェックする。
+ <li>this.mai();              // 各牌の枚数を返す。(this.mai()[$J.m1] = x; で一萬がx枚)
+ <li>this.sum();              // haiとnの合計枚数を得る。
+ <li>this.sorthai();          // haiをソートする。
+ <li>this.addhi(head, type);  // haiに単牌 or nに副露を追加する。(第2引数省略で単牌)
+ <li>this.delhi(order, bool); // haiまたはnの order 番目の単牌・副露を削除する。(第2引数省略で単牌)
+</ul>
+</p>
+
+<h3>HandCalc</h3>
+<p>
+手役を判定する。メンバは以下。<br>
+基本的には、メンバ変数に各種場況を入力するだけでよい。
+
+<ul class="input">
+<li>this.ba_kz = 0; // 場 [0=東, 1=南, 2=西, 3=北]
+<li>this.ch_kz = 0; // 家 [0=東, 1=南, 2=西, 3=北]
+<li>this.tsumo = 0; // 和了り方 [0=ロン, 1=ツモ, 2=牌底ロン, 3=牌底ツモ, 4=搶槓, 5=嶺上ツモ]
+<li>this.reach = 0; // 立直 [0=ダマ, 1=立直, 2=立直一発, 3=W立直, 4=W立直一発]
+<li>this.tsumi = 0; // 積み棒
+<li>this.dora  = 0; // ドラ枚数
+<li>this.aghi  = -1; // 和了牌 [$J.m1(=0)=一萬 ～ $J.chu(=33)=中]
+</ul>
+<ul class="method">
+<li>this.run(ments); // 確定面子mentsに対する役と点数を算出する。mentsは以下の2次元配列で入力する。
+<pre style="border:1px gray solid; background-color:#ffe; padding:3px;">
+ments = [
+  [$J.hat, $J.type.twin], 
+  [$J.hak, $J.type.anko], 
+  [$J.m2,  $J.type.shun], 
+  [$J.chu, $J.type.kan], 
+  [$J.m8,  $J.type.pon] 
+];
+// 發發白白白三四五 [中中中中] [八八八] (順子は先頭牌で指定する)
+// (副露と区別するため、順子・刻子がロン牌を含んでも$J.type.shun, $J.type.ankoとして入力する)
+</pre>
+<pre style="border:1px gray solid; background-color:#ffe; padding:3px;">
+ments = [
+  [$J.hak, $J.type.twin], 
+  [$J.hat, $J.type.twin], 
+  [$J.chu, $J.type.twin], 
+  [$J.ton, $J.type.twin], 
+  [$J.nan, $J.type.twin], 
+  [$J.sha, $J.type.twin], 
+  [$J.pei, $J.type.twin]
+];
+// 白白發發中中東東南南西西北北 (七対子の例)
+</pre>
+</li>
+<li>this.yaku();     // 上記メソッドで得られた役。文字列配列。
+<li>this.point(cat); // 上記メソッドで得られた点数。catはカテゴリ。[0=総収入, 1=親の支払, 2=子の支払]
+<li>this.han();      // 上記メソッドで得られた翻数。整数。
+<li>this.fu(bool);   // 上記メソッドで得られた符。引数省略時は切り上げなしで「22」などの数値を返す。
+<li>this.fueach();   // 上記メソッドで得られた各面子n[i]の符と種類。以下のような2行7列の2次元配列で得られる。
+<pre style="border:1px gray solid; background-color:#ffe; padding:3px;">
+this.fueach() = 
+[ [       2,        8,       0,      16,       2,       2,       2,     0  ], 
+  [$J.type.twin, $J.type.anko, $J.type.chi, $J.type.kan, $J.type.pon]]; /*ツモ符・待ち符・門前ロン符 */
+// 上記の例1で"四"で和了した場合
+</pre></li>
+</ul>
+</p>
+
+<h3>JangResult</h3>
+<p>
+上記2オブジェクトを統括し点数計算する。メンバは以下。
+
+<ul class="method">
+<li>this.run(HandSetInstance, HandCalcInstance);     // HandSetとHandCalcオブジェクトをもとに総合計算
+<li>this.run(str_id);     // BASE64形式IDをもとに総合計算
+<li>this.result_table();  // 上記の総合計算結果のHTML出力
+<li>this.result_id();     // 上記の総合計算結果のBASE64形式ID
+</ul>
+</p>
+<h2>カスタマイズ</h2>
+
+<h3>採用役の変更</h3>
+<p>
+HandCalc.prototype.yaku_all で役を定義しており、HandCalc.prototype.yaku_disable で役の採用選択を決めているため、事前にこれらを変更する。
+なお、"TAN"とか"3RENK"の識別タグはオブジェクトメンバの実装を参照のこと。
+</p>
+<pre style="float:left;">
+<span style="color: red;">// 喰いタンの不採用
+HandCalc.prototype.yaku_all["TAN"][1] = 0;
+// 連刻役の採用
+HandCalc.prototype.yaku_disable["3RENK"] = false;
+HandCalc.prototype.yaku_disable["4RENK"] = false;
+</span>
+// あとは上記同様
+var HandObj = new HandSet();
+HandObj.hai = [$J.m3, $J.m3, $J.m3, $J.m5, $J.m5, $J.m5, $J.s3, $J.s3];
+HandObj.n = [ [$J.m4, $J.type.kan], [$J.p6, $J.type.pon] ];
+
+var CalcObj = new HandCalc();
+CalcObj.aghi  = $J.m5;
+
+var ResObj  = new JangResult();
+ResObj.HandObj = HandObj;
+ResObj.CalcObj = CalcObj;
+ResObj.run();
+document.write(ResObj.result_table());
+</pre>
+<div style="border:1px gray solid; background-color:#ffe; padding:3px; margin:3px;float:left;">
+[動作結果]
+<script type="text/javascript"><!--
+var HandObj = new HandSet();
+HandObj.hai = [$J.m3, $J.m3, $J.m3, $J.m5, $J.m5, $J.m5, $J.s3, $J.s3];
+HandObj.n = [ [$J.m4, $J.type.kan], [$J.p6, $J.type.pon] ];
+
+var CalcObj = new HandCalc();
+CalcObj.aghi  = $J.m5;
+
+CalcObj.yaku_all["TAN"][1] = 0;
+CalcObj.yaku_disable["3RENK"] = false;
+CalcObj.yaku_disable["4RENK"] = false;
+
+var ResObj = new JangResult();
+ResObj.get_result_by_hand(HandObj, CalcObj);
+document.write(ResObj.result_table());
+-->
+</script>
+</div>
+
+<h3>表の各要素の値だけ欲しい</h3>
+<p>
+</p>
+<pre style="float:left;">
+document.write("&lt;li&gt;各符 → " + JSON.stringify(ResObj.HandObj.fueach()));
+document.write("&lt;li&gt;面子 → " + JSON.stringify(ResObj.HandObj.ments()));
+document.write("&lt;li&gt;役   → " + JSON.stringify(ResObj.CalcObj.yaku()));
+document.write("&lt;li&gt;翻   → " + ResObj.CalcObj.han());
+document.write("&lt;li&gt;符   → " + ResObj.CalcObj.fu());
+document.write("&lt;li&gt;点   → " + ResObj.CalcObj.point(0));
+</pre>
+<div style="border:1px gray solid; background-color:#ffe; padding:3px; margin:3px;float:left;">
+[動作結果]
+<ul class="code" style="padding-left:15px; margin:0;">
+<script type="text/javascript"><!--
+document.write("<li>各符 → " + JSON.stringify(ResObj.CalcObj.fueach()));
+document.write("<li>面子 → " + JSON.stringify(ResObj.HandObj.ments()));
+document.write("<li>役   → " + JSON.stringify(ResObj.CalcObj.yaku()));
+document.write("<li>翻   → " + ResObj.CalcObj.han());
+document.write("<li>符   → " + ResObj.CalcObj.fu());
+document.write("<li>点   → " + ResObj.CalcObj.point(0));
+-->
+</script>
+</ul>
+</div>
+
+<h3>3倍満の定義</h3>
+<pre>
+HandCalc.prototype.triple = 11; // 11翻から (デフォルト)
+HandCalc.prototype.triple = 10; // 10翻から
+</pre>
+
+<h3>役牌の対子の符計算</h3>
+<pre>
+HandCalc.prototype.is_chuzan = true;  // 中算法(連風牌の雀頭=4符; デフォルト)
+HandCalc.prototype.is_chuzan = false; // 小算法(連風牌の雀頭=2符)
+</pre>
+
+<h3>切り上げ満貫</h3>
+<p>
+4翻30符または3翻60符(7700/11600/2000-3900)を満貫として扱うかどうかの選択。
+</p>
+<pre>
+HandCalc.prototype.is_mangan77 = true;   // 切り上げ満貫 
+HandCalc.prototype.is_mangan77 = false;  // 切り上げない(デフォルト)
+</pre>
+
+<h3>オリジナルの役を定義したい</h3>
+<p>
+まず、HandCalc.prototype.yaku_all で新規の役名タグを定義する。<br>
+あとは、HandCalcオブジェクト内のthis._check_***_hand()という形式のメソッドを参考のこと。<br>
+基本的にやっていることは mstat に萬子面子数や暗刻面子数などをあらかじめ算出しておいて、それらを組み合わせて条件を満たした役を yakutag.push("役名タグ"); しているだけである。
+</p>
+
+<h3>その他サポート外のこと</h3>
+<p>
+そのうち対応すると思う。
+<ul>
+<li>ローカル役：大車輪(連七対)、大七星、天和、地和、4枚使いの七対子、不靠系、n蓮宝燈
+<li>6倍満貫、数え役満の設定、役満と一般役の複合
+</ul>
+</p>
+
+<h2>よく間違える点数計算</h2>
+<p>
+実際に過去の版で間違えたもの中心に並べておく。ユニットテスト代わり。
+</p>
+<div style="border:1px gray solid; background-color:#ffe; padding:3px; margin:3px;float:left;">
+[例1] (○三色/×平和)
+<script type="text/javascript"><!--
+//デフォルトに戻す
+HandCalc.prototype.yaku_all["TAN"][1] = 1;
+HandCalc.prototype.yaku_disable["3RENK"] = true;
+HandCalc.prototype.yaku_disable["4RENK"] = true;
+
+var HandObj = new HandSet();
+HandObj.hai = [$J.m2, $J.m3, $J.m4, $J.p2, $J.p3, $J.p4, $J.s2, $J.s2, $J.s3, $J.s3, $J.s4, $J.s4, $J.s5, $J.s5];
+
+var CalcObj = new HandCalc();
+CalcObj.aghi  = $J.s3; 
+
+var ResObj = new JangResult();
+ResObj.get_result_by_hand(HandObj, CalcObj);
+document.write(ResObj.result_table());
+-->
+</script>
+</div>
+<div style="border:1px gray solid; background-color:#ffe; padding:3px; margin:3px;float:left;">
+[例2] (○三暗刻/×役なし)
+<script type="text/javascript"><!--
+var HandObj = new HandSet();
+HandObj.hai = [$J.m2, $J.m3, $J.m4, $J.m4, $J.m4, $J.m4, $J.p6, $J.p6, $J.p6, $J.pei, $J.pei, $J.pei, $J.chu, $J.chu];
+
+var CalcObj = new HandCalc();
+CalcObj.aghi  = $J.m4;
+
+var ResObj = new JangResult();
+ResObj.get_result_by_hand(HandObj, CalcObj);
+document.write(ResObj.result_table());
+-->
+</script>
+</div>
+<div style="border:1px gray solid; background-color:#ffe; padding:3px; margin:3px;float:left;">
+[例3] (○純全帯/×三暗刻)
+<script type="text/javascript"><!--
+var HandObj = new HandSet();
+HandObj.hai = [$J.m1, $J.m1, $J.m1, $J.m2, $J.m2, $J.m2, $J.m3, $J.m3, $J.m3, $J.p1, $J.p1, $J.p1, $J.p2, $J.p3];
+
+var CalcObj = new HandCalc();
+CalcObj.tsumo = 1;
+CalcObj.aghi  = $J.m3;
+
+var ResObj = new JangResult();
+ResObj.get_result_by_hand(HandObj, CalcObj);
+document.write(ResObj.result_table());
+-->
+</script>
+</div>
+<div style="border:1px gray solid; background-color:#ffe; padding:3px; margin:3px;float:left;">
+[例4] (○40符/×30符)
+<script type="text/javascript"><!--
+var HandObj = new HandSet();
+HandObj.hai = [$J.s2, $J.s2, $J.s3, $J.s3, $J.s4, $J.s4, $J.s5, $J.s5, $J.hat, $J.hat, $J.hat];
+HandObj.n = [[$J.s7, $J.type.chi]];
+
+var CalcObj = new HandCalc();
+CalcObj.tsumo = 1;
+CalcObj.aghi  = $J.s5;
+
+var ResObj = new JangResult();
+ResObj.get_result_by_hand(HandObj, CalcObj);
+document.write(ResObj.result_table());
+-->
+</script>
+</div>
+<div style="border:1px gray solid; background-color:#ffe; padding:3px; margin:3px;float:left;">
+[例5] (○純全二盃/×三暗刻)
+<script type="text/javascript"><!--
+var HandObj = new HandSet();
+HandObj.hai = [$J.p1, $J.p1, $J.p1, $J.p1, $J.p2, $J.p2, $J.p2, $J.p2, $J.p3, $J.p3, $J.p3, $J.p3, $J.s1, $J.s1];
+
+var CalcObj = new HandCalc();
+CalcObj.tsumo = 1;
+CalcObj.aghi  = $J.s1;
+
+var ResObj = new JangResult();
+ResObj.get_result_by_hand(HandObj, CalcObj);
+document.write(ResObj.result_table());
+-->
+</script>
+</div>
+
+<hr style="clear:both;">
+初出：2014-03-07
+</body>
