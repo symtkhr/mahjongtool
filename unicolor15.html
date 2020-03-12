@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Single suit of land mines</title>
 <script type="text/javascript" src="jquery.min.js"></script>
-<script type="text/javascript" src="../kappa12/jMah_v130.js"></script>
+<script type="text/javascript" src="jMah.js"></script>
 <script type="text/javascript" src="unicolor15.js"></script>
 <style type="text/css">
 body {
@@ -136,6 +136,13 @@ ul, ol{
 .sou { color: #080; }
 .nw { white-space: nowrap; }
 
+.tile {
+  display:inline-block; overflow:hidden; width:18px; height:24px; position:relative;
+}
+.tile img {
+   position:relative;
+}
+
 </style>
 </head>
 
@@ -154,46 +161,8 @@ ul, ol{
 <div id="titlebox">
 <div id="title">
 <img src="./haiga/reach.png" alt="立直棒">
-<img 
-src="./haiga/ton.gif" alt="ton" height=24 width=18><img 
-src="./haiga/nan.gif" alt="nan" height=24 width=18><img 
-src="./haiga/sha.gif" alt="sha" height=24 width=18><img 
-src="./haiga/pei.gif" alt="pei" height=24 width=18><img 
-src="./haiga/hak.gif" alt="hak" height=24 width=18><img 
-src="./haiga/hat.gif" alt="hat" height=24 width=18><img 
-src="./haiga/chu.gif" alt="chu" height=24 width=18><img 
-src="./haiga/back.gif" alt="■" height=24 width=18>
 <h2>地雷一色</h2>
-<img 
-src="./haiga/1m.gif" alt="1m" height=24 width=18><img 
-src="./haiga/2m.gif" alt="2m" height=24 width=18><img 
-src="./haiga/3m.gif" alt="3m" height=24 width=18><img 
-src="./haiga/4m.gif" alt="4m" height=24 width=18><img 
-src="./haiga/5m.gif" alt="5m" height=24 width=18><img 
-src="./haiga/6m.gif" alt="6m" height=24 width=18><img 
-src="./haiga/7m.gif" alt="7m" height=24 width=18><img 
-src="./haiga/8m.gif" alt="8m" height=24 width=18><img 
-src="./haiga/9m.gif" alt="9m" height=24 width=18><br>
-<img 
-src="./haiga/1p.gif" alt="1p" height=24 width=18><img 
-src="./haiga/2p.gif" alt="2p" height=24 width=18><img 
-src="./haiga/3p.gif" alt="3p" height=24 width=18><img 
-src="./haiga/4p.gif" alt="4p" height=24 width=18><img 
-src="./haiga/5p.gif" alt="5p" height=24 width=18><img 
-src="./haiga/6p.gif" alt="6p" height=24 width=18><img 
-src="./haiga/7p.gif" alt="7p" height=24 width=18><img 
-src="./haiga/8p.gif" alt="8p" height=24 width=18><img 
-src="./haiga/9p.gif" alt="9p" height=24 width=18><br>
-<img 
-src="./haiga/1s.gif" alt="1s" height=24 width=18><img 
-src="./haiga/2s.gif" alt="2s" height=24 width=18><img 
-src="./haiga/3s.gif" alt="3s" height=24 width=18><img 
-src="./haiga/4s.gif" alt="4s" height=24 width=18><img 
-src="./haiga/5s.gif" alt="5s" height=24 width=18><img 
-src="./haiga/6s.gif" alt="6s" height=24 width=18><img 
-src="./haiga/7s.gif" alt="7s" height=24 width=18><img 
-src="./haiga/8s.gif" alt="8s" height=24 width=18><img 
-src="./haiga/9s.gif" alt="9s" height=24 width=18>
+<img src="haiga.png"/>
 </div><!-- id="title"-->
 </div><!-- id="titlebox"-->
 <div id="presentation" style="display:none;">
@@ -233,7 +202,7 @@ src="./haiga/9s.gif" alt="9s" height=24 width=18>
  <div id="result"></div>
 </div><!-- id="sidebox"-->
 <div id="ranking" style="float:left;"></div>
-<div id="debug" style="float:left;"></div>
+<div id="debug" style="float:left; width:calc(100%-320px);"></div>
 </div><!-- id="main"-->
 
 <div id="rule" style=" display:none; background:#cccccc; padding:10px; clear:both;">

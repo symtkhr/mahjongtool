@@ -1,29 +1,35 @@
 //-*- coding: utf-8 -*-
+/*
 var hiname = new Array
 ("1","2","3","4","5","6","7","8","9",
  "1p","2p","3p","4p","5p","6p","7p","8p","9p",
  "1s","2s","3s","4s","5s","6s","7s","8s","9s",
  "ton","nan","sha","pei","hak","hat","chu"
  );
-
+*/
 /////////////// 牌画タグ
-var hi_tag = function(hi){
-  var hiname = new Array
-  ("1m","2m","3m","4m","5m","6m","7m","8m","9m",
-   "1p","2p","3p","4p","5p","6p","7p","8p","9p",
-   "1s","2s","3s","4s","5s","6s","7s","8s","9s",
-   "ton","nan","sha","pei","hak","hat","chu"
-   );
-  //return (hi==-1)? "# " : hiname[hi] + " ";
-  var hinamej = new Array
-  ( "一萬","二萬","三萬","四萬","五萬","六萬","七萬","八萬","九萬",
-    "一筒","二筒","三筒","四筒","五筒","六筒","七筒","八筒","九筒",
-    "一索","二索","三索","四索","五索","六索","七索","八索","九索",
-    "東","南","西","北","白","發","中"
-    );
-  if(hi==-1) return '<img src="./haiga/back.gif" width=18 height=24 alt="■">';
-  return'<img src="./haiga/' + hiname[hi]+'.gif" width=18 height=24 alt="' + hiname[hi]+ '">';
-}
+var hi_tag = $J.hitag = function(hi)
+{
+    if (hi < 0 || 34 <= hi) hi = 34;
+
+    var hinamej = [
+        "一萬","二萬","三萬","四萬","五萬","六萬","七萬","八萬","九萬",
+        "一筒","二筒","三筒","四筒","五筒","六筒","七筒","八筒","九筒",
+        "一索","二索","三索","四索","五索","六索","七索","八索","九索",
+        "東","南","西","北","白","發","中"
+    ];
+
+    var x = (hi % 9);
+    var y = (hi - x) / 9;
+    var img = {
+        style: ["left:" + (-x * 18) + 'px', "top:" + (-y * 24) + "px"].join(";"),
+        src: "haiga.png",
+        alt: hinamej[hi] || "■",
+    };
+
+    var $img = "<img " + Object.keys(img).map(key => key + "=" + img[key]).join(" ") + ">";
+    return '<span class="tile">' + $img + "</span>";
+};
   
 var hi_tag_array = function(tehai, joiner){
   if(typeof joiner === 'undefined') joiner = "";
@@ -32,21 +38,20 @@ var hi_tag_array = function(tehai, joiner){
   return mes;
 }
 
-var gSearch_machi = function(hai){
-  var p = new HandSet();
-  var ag = [];
-  if(hai.length!=13) return ag;
-  
-  p.hai = hai;
-  p.hai2t();
-  for (var i=0; i<34; i++) {
-    if(p.t[i]==4) continue;
-    p.t[i]++;
-    if(p.split_into_ments(false)) ag.push(i);
-    p.t[i]--;
-  }
-  return ag;
-}
+ var gSearch_machi = function(hai){
+     if (hai.length != 13) return [];
+     var p = new HandSet();
+     p.hai = hai;
+     return [...Array(34)].map((zero, tile) => tile)
+         .filter(tile => {
+             if (p.t[tile] == 4) return false;
+             p.hai.push(tile);
+             var ret = p.split();
+             p.hai.pop();
+             return ret;
+         });
+};
+
 
 var DEBUG = 0;
 var ModCpMakeHand = function(t){
@@ -364,7 +369,7 @@ var ModPlayer = function(name, is_hito){
     for(var j=0; j<this.discard.length; j++){
       var sute = this.discard[j];
       for(var i=0; i<3; i++)
-	if(gPlayer[i].river.index(sute) >= 0 && this.target.index(sute) < 0){ sute_order = j; break; }
+	if(gPlayer[i].river.indexOf(sute) >= 0 && this.target.indexOf(sute) < 0){ sute_order = j; break; }
       if(sute_order >= 0) break;
     }
     // in the case of no safety in my discard[]
@@ -388,8 +393,8 @@ var ModPlayer = function(name, is_hito){
 	if(i==turn) continue;
 	var c = Math.floor(gPlayer[i].handset[0]/9);
 	var n_mom = 0, c_mom = 0;
-	for(j=0;j<9;j++) if(wholeRiver.index(c*9+j)>=0) n_mom++;
-	for(j=0;j<7;j++) if(wholeRiver.index(27+j)>=0)  c_mom++;
+	for(j=0;j<9;j++) if(wholeRiver.indexOf(c*9+j)>=0) n_mom++;
+	for(j=0;j<7;j++) if(wholeRiver.indexOf(27+j)>=0)  c_mom++;
 	var is_oya = (gPlayer[i].wind==0);
 	var is_top = (gPlayer[i].point>gPlayer[(i+1)%3].point && gPlayer[i].point>gPlayer[(i+2)%3].point);
 	for(j=0;j<34; j++) safe_rate[j] = 1;
@@ -432,7 +437,7 @@ var ModPlayer = function(name, is_hito){
     for(var j=0; j<this.discard.length; j++){
       var sute = this.discard[j];
       for(var i=0; i<3; i++)
-	if(gPlayer[i].river.index(sute) >= 0 && this.target.index(sute) < 0){ sute_order = j; break; }
+	if(gPlayer[i].river.indexOf(sute) >= 0 && this.target.indexOf(sute) < 0){ sute_order = j; break; }
       if(sute_order >= 0) break;
     }
     if(sute_order < 0)
@@ -440,7 +445,7 @@ var ModPlayer = function(name, is_hito){
 	sute_order = parseInt(Math.random() * this.discard.length);
 	var q = Math.random() * (30 - this.river.length * 2);
 	var sute = this.discard[sute_order];
-	if(this.target.index(sute)<0 && (sute>= 27 || q < 1)) break;
+	if(this.target.indexOf(sute)<0 && (sute>= 27 || q < 1)) break;
       }
     this.river.push(this.discard[sute_order]);
     this.discard.splice(sute_order,1);
@@ -564,11 +569,11 @@ function ask_user_discard(){
 
 var is_user_lag_to_declare = function (sute){
     if(gTurn==0) return false;
-    if(gPlayer[0].pass.index(sute)>=0) return false;
-    if(gPlayer[0].handset.index(sute) >= 0) return true;
+    if(gPlayer[0].pass.indexOf(sute)>=0) return false;
+    if(gPlayer[0].handset.indexOf(sute) >= 0) return true;
     if(sute >= 27) return false;
     if(Math.floor(sute/9) != Math.floor(gPlayer[0].handset[0]/9) ) return false;
-    if(gPlayer[0].handset.index(sute+1) < 0 && gPlayer[0].handset.index(sute-1)< 0 ) return false;
+    if(gPlayer[0].handset.indexOf(sute+1) < 0 && gPlayer[0].handset.indexOf(sute-1)< 0 ) return false;
     return true;
 }
 
@@ -578,13 +583,13 @@ var checkfin = function() {
   for(var i=0; i<3; i++){
 /*
     if(gPlayer[i].is_hito && i!=gTurn){
-	if(gPlayer[i].pass.index(sute)>=0) continue;
-	if( gPlayer[i].handset.index(sute)>=0 || 
+	if(gPlayer[i].pass.indexOf(sute)>=0) continue;
+	if( gPlayer[i].handset.indexOf(sute)>=0 || 
 	   (sute<27 && Math.floor(sute/9) == Math.floor(gPlayer[i].handset[0]/9) )) // this is rough condition...
 	gPlayer[i].isFin = true;
     }
 */
-    if(gPlayer[i].isWaive || gPlayer[i].target.index(sute)<0) continue;
+    if(gPlayer[i].isWaive || gPlayer[i].target.indexOf(sute)<0) continue;
     if(i!=gTurn) gPlayer[i].isFin = true;
     if(i==gTurn) gPlayer[i].isWaive = true;
   }
@@ -610,7 +615,7 @@ var declare_finish = function() {
     is_fin = true;
   }
     if(gPlayer[0].isFin ){
-	if( gPlayer[0].target.index(sute)<0){
+	if( gPlayer[0].target.indexOf(sute)<0){
 	 gPlayer[0].isIllegal = true;
 	 $("#p0 .handset").append("<br>錯和(誤栄)");
        } else if(gPlayer[0].isWaive){
@@ -629,7 +634,7 @@ var ask_finish = function() {
       var river = gPlayer[gTurn].river;
       var sute = river[river.length-1];
       gPlayer[0].isFin = false;  
-      if(gPlayer[0].target.index(sute)>=0) gPlayer[0].isWaive = true;
+      if(gPlayer[0].target.indexOf(sute)>=0) gPlayer[0].isWaive = true;
       gPlayer[0].pass.push(sute);
       state_machine(); 
   } ); 
@@ -652,11 +657,11 @@ function user_make_hand(yamahi){
       $("#handset").append(mes);
       $("#start").attr('disabled', $("span.te_hi").length!=13);
     });
-  $("span.te_hi").live("click", function(){ 
+  $("#handset").on("click", "span.te_hi", function(){ 
       $("#" + $(this).attr("id").split("_del").join("_add")).show();
       $(this).remove();
       $("#start").attr('disabled', $("span.te_hi").length!=13);
-    });
+  });
   $(":button#clear").click(function(){$(".yama_hi").show(); $("span.te_hi").remove();});
   $(":button#sort").click(function(){
       var tehai = [];
@@ -679,8 +684,8 @@ function user_make_hand(yamahi){
       $("span.te_hi").each(function(){
         var hai = $(this).attr("id").split("_del").pop()-0;
         tehai.push(hai);
-        yamahi.splice(yamahi.index(hai),1);
-      }).die();
+        yamahi.splice(yamahi.indexOf(hai),1);
+      });//.die();
       $(".yama_hi").unbind();
       $(":button#clear, :button#sort, :button#start").hide();
       gPlayer[0].handset = tehai.slice().sort((x,y) => (x-y));
