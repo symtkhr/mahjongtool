@@ -34,22 +34,22 @@ var hi_tag = $J.hitag = function(hi)
 var hi_tag_array = function(tehai, joiner){
   if(typeof joiner === 'undefined') joiner = "";
   var mes = "";
-  for(var i=0; i<tehai.length; i++ ) mes += hi_tag(tehai[i]) + joiner;
+  for (var i = 0; i<tehai.length; i++) mes += hi_tag(tehai[i]) + joiner;
   return mes;
-}
+};
 
- var gSearch_machi = function(hai){
-     if (hai.length != 13) return [];
-     var p = new HandSet();
-     p.hai = hai;
-     return [...Array(34)].map((zero, tile) => tile)
-         .filter(tile => {
-             if (p.t[tile] == 4) return false;
-             p.hai.push(tile);
-             var ret = p.split();
-             p.hai.pop();
-             return ret;
-         });
+var gSearch_machi = function(hai){
+  if (hai.length != 13) return [];
+  var p = new HandSet();
+  p.hai = hai;
+  return [...Array(34)].map((zero, tile) => tile)
+        .filter(tile => {
+          if (p.t[tile] == 4) return false;
+          p.hai.push(tile);
+          var ret = p.split();
+          p.hai.pop();
+          return ret;
+    });
 };
 
 
@@ -212,11 +212,11 @@ var ModCpMakeHand = function(t){
       $("#debug").html("<br>"+koho+" / TingPai = "+tval.length+" cases:<br>");
       var res = "";
       for(var i=0; i<tval.length; i++){
-	if(i==koho) res += "---------------------------------<br>";
-	res += "("+tval[i].grade+") ";
-	res += show_n(this.ns[tval[i].id]);
-	if(tval[i].add >= 0) res += hiname[tval[i].add];
-	res += "<br>";
+        if(i==koho) res += "---------------------------------<br>";
+        res += "("+tval[i].grade+") ";
+        res += show_n(this.ns[tval[i].id]);
+        if(tval[i].add >= 0) res += hiname[tval[i].add];
+        res += "<br>";
       }
       $("#debug").html(res);
     }
@@ -226,8 +226,8 @@ var ModCpMakeHand = function(t){
     var n = this.ns[tval[picked].id];
     for(var i=0; i<n.length; i++)
       for(var j=0; j<n[i].length; j++){
-	t.push(n[i][j]);
-	this.t[n[i][j]]--;
+        t.push(n[i][j]);
+        this.t[n[i][j]]--;
       }
     if(tval[picked].add >= 0) t.push(tval[picked].add);
 
@@ -243,28 +243,28 @@ var ModCpMakeHand = function(t){
     var is_add = (n.length!=5); // possible to add any one to 12 tiles
     for(var i=0; i<n.length; i++)
       for(var j=0; j<n[i].length; j++ ){
-	te.push(n[i][j]);
-	r[n[i][j]]--;
+        te.push(n[i][j]);
+        r[n[i][j]]--;
       }
     for(var j=0; j<r.length; j++){
       var is_jihai = false;
       if(is_add){
-	if(r[j]==0) continue;
-	if(n.length==4 && this.t[j]-r[j]>=3) continue;
-	if(n.length==6 && this.t[j]-r[j]>0 ) continue;
-	te.push(j);
+        if(r[j]==0) continue;
+        if(n.length==4 && this.t[j]-r[j]>=3) continue;
+        if(n.length==6 && this.t[j]-r[j]>0 ) continue;
+        te.push(j);
       }
       var agn = 0;
       var ag = gSearch_machi(te);
       for(var i=0; i<ag.length; i++){ 
-	res += " " + hiname[ag[i]]; 
-	agn += 4 - this.t[ag[i]];
-	if(ag[i] >= 27) is_jihai = true;
+        res += " " + hiname[ag[i]]; 
+        agn += 4 - this.t[ag[i]];
+        if(ag[i] >= 27) is_jihai = true;
       }
       this.tval.push( { 
-	grade: ag.length * agn *(is_jihai ? 2:1), 
-	id   : id, 
-	add  : (is_add ? j:-1) 
+        grade: ag.length * agn *(is_jihai ? 2:1), 
+        id   : id, 
+        add  : (is_add ? j:-1) 
       });
       if(!is_add) break;
       te.pop();
@@ -274,9 +274,9 @@ var ModCpMakeHand = function(t){
       var agn = 0;
       var ag = gSearch_machi(te);
       for(var i=0; i<ag.length; i++){ 
-	res += " " + hiname[ag[i]]; 
-	agn += 4 - this.t[ag[i]];
-	if(ag[i] >= 27) is_jihai = true;
+        res += " " + hiname[ag[i]]; 
+        agn += 4 - this.t[ag[i]];
+        if(ag[i] >= 27) is_jihai = true;
       }
       tval.push( {grade: ag.length * agn *(is_jihai ? 2:1), id:id, add:-1} );
     }
@@ -369,17 +369,20 @@ var ModPlayer = function(name, is_hito){
     for(var j=0; j<this.discard.length; j++){
       var sute = this.discard[j];
       for(var i=0; i<3; i++)
-	if(gPlayer[i].river.indexOf(sute) >= 0 && this.target.indexOf(sute) < 0){ sute_order = j; break; }
-      if(sute_order >= 0) break;
+        if(gPlayer[i].river.indexOf(sute) >= 0 && this.target.indexOf(sute) < 0){ sute_order = j; break; }
+        if(sute_order < 0) continue;
+        $("#debug").append("[合せ切り]<br>");
+        break;
     }
     // in the case of no safety in my discard[]
     if(sute_order < 0){
+      $("#debug").append("[捨て牌選択]"+this.name+": safe_rate = <br>");
       var wholeRiver = [];
       var inclchar = [0,0,0]; // n of char tiles
       var safe_rate = Array(34);
       for(var i=0; i<3; i++){
-	wholeRiver = wholeRiver.concat(gPlayer[i].river);
-	inclchar[i] = 29 - ( gPlayer[i].discard.length + gPlayer[i].river.length );
+        wholeRiver = wholeRiver.concat(gPlayer[i].river);
+        inclchar[i] = 29 - ( gPlayer[i].discard.length + gPlayer[i].river.length );
       }
       var res=[]; // n of tiles seen from me
       for( var i=0; i<34;  i++ ) res[i]=0;
@@ -388,41 +391,43 @@ var ModPlayer = function(name, is_hito){
       for( var i=0; i<this.handset.length; i++ ) res[this.handset[i]]++;
       var safe_eval = [];
       for( var i=0; i<34; i++ ) safe_eval.push(1);
-      
       for(var i=0;i<3;i++){
-	if(i==turn) continue;
-	var c = Math.floor(gPlayer[i].handset[0]/9);
-	var n_mom = 0, c_mom = 0;
-	for(j=0;j<9;j++) if(wholeRiver.indexOf(c*9+j)>=0) n_mom++;
-	for(j=0;j<7;j++) if(wholeRiver.indexOf(27+j)>=0)  c_mom++;
-	var is_oya = (gPlayer[i].wind==0);
-	var is_top = (gPlayer[i].point>gPlayer[(i+1)%3].point && gPlayer[i].point>gPlayer[(i+2)%3].point);
-	for(j=0;j<34; j++) safe_rate[j] = 1;
-	for(j=c*9; j<c*9+9; j++){
-	  if(inclchar[i]%3==0) safe_rate[j] -= n_mom < 3.5 ? 5.5/(9-n_mom) : 1;
-	  if(inclchar[i]%3==2) safe_rate[j] -= n_mom < 3 ?     3/(9-n_mom) : 1;
-	  if(safe_rate[j]==1) continue;
-	  if(inclchar[i]==0) safe_rate[j] *= .9;
-	  if(is_oya) safe_rate[j] *= .9;
-	  if(is_top) safe_rate[j] *= .9;
-	}
-	for(j=27;j<34;j++){
-	  if(inclchar[i]%3==1) safe_rate[j] -= c_mom==7 ? 0 : (inclchar[i]==1?1:2)/(7-c_mom);
-	  if(inclchar[i]%3==2) safe_rate[j] -= c_mom==7 ? 0 : 1/(7-c_mom);
-	  if(safe_rate[j]==1) continue;
-	  if(is_oya) safe_rate[j] *= .9;
-	  if(is_top) safe_rate[j] *= .9;
-	}
-	for(j=0;j<34; j++){ 
-	  safe_eval[j] *= safe_rate[j];
-	  safe_rate[j] = Math.ceil(safe_rate[j]*100);
-	}
-        $("#debug").append("safe_rate["+i+"]"+safe_rate.join(",")+"<br>");
+        if(i==turn) continue;
+        var c = Math.floor(gPlayer[i].handset[0]/9);
+        var n_mom = 0, c_mom = 0;
+        for(j=0;j<9;j++) if(wholeRiver.indexOf(c*9+j)>=0) n_mom++;
+        for(j=0;j<7;j++) if(wholeRiver.indexOf(27+j)>=0)  c_mom++;
+        var is_oya = (gPlayer[i].wind==0);
+        var is_top = (gPlayer[i].point>gPlayer[(i+1)%3].point && gPlayer[i].point>gPlayer[(i+2)%3].point);
+        for(j=0;j<34; j++) safe_rate[j] = 1;
+        for(j=c*9; j<c*9+9; j++){
+          if(inclchar[i]%3==0) safe_rate[j] -= n_mom < 3.5 ? 5.5/(9-n_mom) : 1;
+          if(inclchar[i]%3==2) safe_rate[j] -= n_mom < 3 ?     3/(9-n_mom) : 1;
+          if(safe_rate[j]==1) continue;
+          if(inclchar[i]==0) safe_rate[j] *= .9;
+          if(is_oya) safe_rate[j] *= .9;
+          if(is_top) safe_rate[j] *= .9;
+        }
+        for(j=27;j<34;j++){
+          if(inclchar[i]%3==1) safe_rate[j] -= c_mom==7 ? 0 : (inclchar[i]==1?1:2)/(7-c_mom);
+          if(inclchar[i]%3==2) safe_rate[j] -= c_mom==7 ? 0 : 1/(7-c_mom);
+          if(safe_rate[j]==1) continue;
+          if(is_oya) safe_rate[j] *= .9;
+          if(is_top) safe_rate[j] *= .9;
+        }
+        for(j=0;j<34; j++){ 
+          safe_eval[j] *= safe_rate[j];
+          safe_rate[j] = Math.ceil(safe_rate[j]*100);
+        }
+          $("#debug").append(
+              "["+gPlayer[i].name+"]="+'<span style="color:'+["red","blue","green"][c]+'">'
+                  +safe_rate.slice(c*9,c*9+9).join(",")+"</span>,"+
+                  safe_rate.slice(27).join(",")+"<br>");
       }
       for(i=0; i<this.target.length;i++) safe_rate[this.target[i]] = 0;
       this.discard.sort(function(a,b){ return safe_eval[b]-safe_eval[a]; });
       $("#debug").append("安全順:"+hi_tag_array(this.discard)+"<br>");
-    for(var i=0; safe_eval[this.discard[i]]==safe_eval[this.discard[0]]; i++);
+      for(var i=0; safe_eval[this.discard[i]]==safe_eval[this.discard[0]]; i++);
       sute_order = parseInt(Math.random() * i);
     }
     this.river.push(this.discard[sute_order]);
@@ -437,15 +442,15 @@ var ModPlayer = function(name, is_hito){
     for(var j=0; j<this.discard.length; j++){
       var sute = this.discard[j];
       for(var i=0; i<3; i++)
-	if(gPlayer[i].river.indexOf(sute) >= 0 && this.target.indexOf(sute) < 0){ sute_order = j; break; }
+        if(gPlayer[i].river.indexOf(sute) >= 0 && this.target.indexOf(sute) < 0){ sute_order = j; break; }
       if(sute_order >= 0) break;
     }
     if(sute_order < 0)
       for(var i=0; i<50; i++){
-	sute_order = parseInt(Math.random() * this.discard.length);
-	var q = Math.random() * (30 - this.river.length * 2);
-	var sute = this.discard[sute_order];
-	if(this.target.indexOf(sute)<0 && (sute>= 27 || q < 1)) break;
+        sute_order = parseInt(Math.random() * this.discard.length);
+        var q = Math.random() * (30 - this.river.length * 2);
+        var sute = this.discard[sute_order];
+        if(this.target.indexOf(sute)<0 && (sute>= 27 || q < 1)) break;
       }
     this.river.push(this.discard[sute_order]);
     this.discard.splice(sute_order,1);
@@ -555,6 +560,7 @@ function ask_user_discard(){
   $("#discard0 li.disc_hi").click(function(){
       if($(this) == null) return;
       $(this).hide();
+      $("#debug").text("");
       var sute_order = $(this).attr("id").replace("disc","") - 1;
       gPlayer[0].river.push(gPlayer[0].discard[sute_order]);
       gPlayer[0].discard.splice(sute_order,1);
@@ -583,17 +589,17 @@ var checkfin = function() {
   for(var i=0; i<3; i++){
 /*
     if(gPlayer[i].is_hito && i!=gTurn){
-	if(gPlayer[i].pass.indexOf(sute)>=0) continue;
-	if( gPlayer[i].handset.indexOf(sute)>=0 || 
-	   (sute<27 && Math.floor(sute/9) == Math.floor(gPlayer[i].handset[0]/9) )) // this is rough condition...
-	gPlayer[i].isFin = true;
+        if(gPlayer[i].pass.indexOf(sute)>=0) continue;
+        if( gPlayer[i].handset.indexOf(sute)>=0 || 
+           (sute<27 && Math.floor(sute/9) == Math.floor(gPlayer[i].handset[0]/9) )) // this is rough condition...
+        gPlayer[i].isFin = true;
     }
 */
     if(gPlayer[i].isWaive || gPlayer[i].target.indexOf(sute)<0) continue;
     if(i!=gTurn) gPlayer[i].isFin = true;
     if(i==gTurn) gPlayer[i].isWaive = true;
   }
-  $("#debug").append("gPlayer.target:"+gPlayer[1].target+"/"+gPlayer[2].target+"/sute="+sute);
+    //$("#debug").append("gPlayer.target:"+hi_tag_array(gPlayer[1].target)+"/"+hi_tag_array(gPlayer[2].target)+"/sute="+hi_tag(sute) + "<br>");
   if(is_user_lag_to_declare(sute)) gPlayer[0].isFin = true;
   if(gPlayer[0].isFin) return 1; // NEXT.ASKRON
   if(gPlayer[1].isFin || gPlayer[2].isFin) return 2; // NEXT.SAYRON
@@ -615,13 +621,13 @@ var declare_finish = function() {
     is_fin = true;
   }
     if(gPlayer[0].isFin ){
-	if( gPlayer[0].target.indexOf(sute)<0){
-	 gPlayer[0].isIllegal = true;
-	 $("#p0 .handset").append("<br>錯和(誤栄)");
+        if( gPlayer[0].target.indexOf(sute)<0){
+         gPlayer[0].isIllegal = true;
+         $("#p0 .handset").append("<br>錯和(誤栄)");
        } else if(gPlayer[0].isWaive){
-	 gPlayer[0].isIllegal = true;
-	 $("#p0 .handset").append("<br>錯和(振聴)");
-	}
+         gPlayer[0].isIllegal = true;
+         $("#p0 .handset").append("<br>錯和(振聴)");
+        }
     if(gPlayer[1].isFin || gPlayer[2].isFin) gPlayer[0].isIllegal = false;
   }
   return is_fin;
@@ -643,7 +649,7 @@ var ask_finish = function() {
 function user_make_hand(yamahi){
   $(":button#clear, :button#sort, :button#start").show();
   //$("#message").html("Make a tingpai hand by picking out of the dealt 25 tiles.");
-  $("#message").html("配牌25枚から13枚を選んで聴牌形をつくってください。<span id='resttime'>180</span>");
+  $("#message").html("配牌25枚から13枚を選んで聴牌形をつくってください。(<span id='resttime'>180</span>秒)");
   $("#dealt, #handset").html("");
   var tehai = new Array();
   for(var i=0; i<yamahi.length; i++ ){
@@ -713,11 +719,11 @@ var payment = function(){
      if(!gPlayer[i].isFin) continue;
      if(gPlayer[i].isIllegal){
          var point = (gPlayer[i].wind==0) ? 12:8; //[9+9=18 or 6+9=15]
-	 gPlayer[i].point -= point * 2;
+         gPlayer[i].point -= point * 2;
          gPlayer[(i+1)%3].point += point;
-         gPlayer[(i+2)%3].point += point;	 
+         gPlayer[(i+2)%3].point += point;         
          $("#p"+i+" .handset").append(" = " + point + "kオール");
-	 continue;
+         continue;
      }
     var ag =  gPlayer[gTurn].river[gPlayer[gTurn].river.length-1];
     var HandObj = new HandSet();
@@ -754,7 +760,7 @@ var show_all = function(){
     var res = hi_tag_array(gPlayer[i].discard);
     if(i==0)  $("#discard0").html(res);
     else $("#p"+ i +" .discard").append(res);
-    var res = " (待ち: "+ hi_tag_array(gPlayer[i].target) + ")";
+    var res = " <span style='display:inline-block'>(待ち: "+ hi_tag_array(gPlayer[i].target) + ")</span>";
     $("#p"+i+" .handset").show().append(res);
   }
 }
@@ -845,7 +851,7 @@ var state_machine = function() {
   }
   count_stop();
   var swWait = WAIT.NOTHING;
-  while(!swWait){
+    while(!swWait){
     switch(stState){
     case STATE.INIT:
       //$("#message").html("お待ちください");
@@ -865,13 +871,23 @@ var state_machine = function() {
       swWait  = WAIT.FORTIME;
       $("#resttime").html(stTime);
       for(var i=0; i<3; i++) 
-	if(!gPlayer[i].isReady && !gPlayer[i].is_hito){
-	  gPlayer[i].cpu_set_hand();
-	  break;
-	}
+        if(!gPlayer[i].isReady && !gPlayer[i].is_hito){
+          gPlayer[i].cpu_set_hand();
+          break;
+        }
       if(gPlayer[0].isReady){
-	stState = STATE.TURN_START;
-	swWait  = WAIT.NOTHING;
+        stState = STATE.TURN_START;
+        swWait  = WAIT.NOTHING;
+      }
+      else if (stTime <= 0) {
+          while (13 < $("span.te_hi").length) $("span.te_hi").eq(-1).click();
+          while ($("span.te_hi").length < 13)
+              $(".yama_hi:visible")
+              .eq(parseInt(Math.random() * $(".yama_hi:visible").length)).click();
+          $(".yama_hi").unbind();
+          $("#clear").hide();
+          $("#handset").off();
+          swWait = WAIT.FORUSER;
       }
       break;
     case STATE.TURN_START:
@@ -888,8 +904,8 @@ var state_machine = function() {
     case STATE.ASK_DISCARD:
     case STATE.DISCARD:
       if(gTurn == 0){
-	//ask_user_discard(gTurn);
-	swWait = WAIT.FORUSER;
+        //ask_user_discard(gTurn);
+        swWait = WAIT.FORUSER;
       } else {
       }
       gPlayer[gTurn].cpu_discard(gTurn);
@@ -931,9 +947,9 @@ var state_machine = function() {
       break;
     case STATE.FINISH:
       if(check_finish())
-	swWait = WAIT.FORUSER;
+        swWait = WAIT.FORUSER;
       else
-	stState = STATE.INIT;
+        stState = STATE.INIT;
       break;
     }
   }
@@ -942,6 +958,7 @@ var state_machine = function() {
 
 $(document).ready( function() {
     init_game();
+    $("#debug").hide();
     $("#show_rule").click( function(){ $("#rule").show(); $("#main").hide(); } );
     $("#hide_rule").click( function(){ $("#rule").hide(); $("#main").show(); } );
     $("#titlebox").click(function(){  $("#message").html("お待ちください"); $(this).unbind(); state_machine(); });
