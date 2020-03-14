@@ -133,7 +133,7 @@ document.write(ResObj.result_table());
 </div>
 <p style="clear:both;">シンプルとか言いつつ複雑な感じに見える。要は赤字のところを変えればいいだけ。</p>
 
-<h2>オブジェクトの解説</h2>
+<h2>オブジェクトの構成</h2>
 <p>
 設計が見にくいが何とか。各オブジェクトを単体で使うことがなければ特にこの節を読む必要はない。
 </p>
@@ -147,7 +147,7 @@ document.write(ResObj.result_table());
 <p>
 手牌を格納する。メンバは以下。<br>
 基本的には、<span>this.hai</span>のいずれかに門前牌を、<span>this.n</span>に副露牌を入力するだけでよい。
-
+</p>
 <ul class="input">
  <li class="input">this.hai = []; <br> 門前牌。[$J.m1, $J.s1, $J.p1, $J.ton, $J.hak ...] などと入力する。
  <li class="input">this.n   = []; <br> 副露牌。[[$J.m1, $J.type.pon], [$J.m4, $J.type.chi], ...] などと入力する。(チーは先頭牌で表現する)
@@ -172,7 +172,18 @@ this.ments() = [
  <li>this.addhi(head, type);  // haiに単牌 or nに副露を追加する。(第2引数省略で単牌)
  <li>this.delhi(order, bool); // haiまたはnの order 番目の単牌・副露を削除する。(第2引数省略で単牌)
 </ul>
+<p>
+  派生的な使い方として、各牌の枚数を配列で与えるメンバも用意している。
 </p>
+<ul class="input">
+  <li class="input">this.t = []; // 門前牌の枚数。Array(34) で [3, 1, 1, 1, 2, 1, 1, 1, 3, ... ] (=上記九蓮宝燈と同じ)と入力する。</li>
+</ul>
+<ul class="method">
+  <li>this.split(is_all);   // 同上。hai(またはt)とnとを面子に切る。haiとtの再構成も行う。
+  <li>this.is_valid();      // 同上。hai(またはt)とnとが少牌・多牌していないかをチェックする。正常であれば haiとtの再構成も行う。
+  <li>this.t2hai();         // tをhaiに変換する。
+  <li>this.hai2t();         // 上記の逆。
+</ul>
 
 <h3>HandCalc</h3>
 <p>

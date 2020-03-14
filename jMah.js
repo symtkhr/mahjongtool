@@ -195,8 +195,12 @@ var HandCalc = function(ments) {
   /////////////////////////////// 符計算に関わる役
   this._check_fu_related_hand = function() {
       if (this.tsumo % 2 && !this.is_pinzumo) return;
+
       if (ments.slice(1).every(m => $J.type.is_shun(m.type)) &&
           ments.some(m => m.machi == "ryan") &&
+          !$J.is3gen(ments[0].head) &&
+          ments[0].head != (this.ba_kz + $J.ton) &&
+          ments[0].head != (this.ch_kz + $J.ton) &&
           mstat.furo == 0)
           yakutag.push("PINFU"); // 平和
   };
@@ -252,7 +256,7 @@ var HandCalc = function(ments) {
   this._check_fanpai_hand = function(){
       var ba_kz = this.ba_kz + $J.ton;
       var ch_kz = this.ch_kz + $J.ton;
-      var subments = ments.slice(1);
+      var subments = ments.filter(m => $J.type.is_koh(m.type));
       var n = subments.filter(m => $J.is3gen(m.head) || (m.head == ba_kz)).length
           + subments.filter(m => (m.head == ch_kz)).length;
       yakutag = yakutag.concat(Array(n).fill("YAKUHAI"));
@@ -361,7 +365,7 @@ var HandCalc = function(ments) {
       let ret = [[1,2], [1,3], [1,4], [2,3], [2,4], [3,4]].some(combi => {
           var m1 = ments[combi[0]];
           var m2 = ments[combi[1]];
-          return (m1.head == m2.head) && ($J.type.is_shun(m1.type) || $J.type.is_shun(m2.type));
+          return (m1.head == m2.head) && $J.type.is_shun(m1.type) && $J.type.is_shun(m2.type);
       });
       if (ret) yakutag.push("1PEKO"); // 一盃口
   };
@@ -430,10 +434,10 @@ var HandCalc = function(ments) {
       }
 
       //面子符
-      var ba_kz = this.ba_kz + $J.ton;
-      var ch_kz = this.ch_kz + $J.ton;
-      var is_chuzan = this.is_chuzan;
       ments = ments.map(m => {
+          var ba_kz = this.ba_kz + $J.ton;
+          var ch_kz = this.ch_kz + $J.ton;
+          var is_chuzan = this.is_chuzan;
           m.fu = 0;
           var is_yakuhai = (m.head == ba_kz || m.head == ch_kz || $J.is3gen(m.head));
           if ((m.type == $J.type.twin) && is_yakuhai) {
@@ -578,6 +582,7 @@ var JangResult = function(){
   }
   this.config_show_haishi = function(bool) {
       pvt_config.show_haishi = bool;
+      return this;
   };
   ////////////////// 
   this.result_table = function(){
@@ -607,8 +612,8 @@ var JangResult = function(){
       Calc.run(pvt_jhans[0].n);
   };
   //////////////////
-    var show_hi = function(n, single_flag) { // 牌表示
-      var res = (single_flag ? [n]: n).map(n0 => {
+  this.show_ments = function(n) { // 牌表示
+      var res = n.map(n0 => {
           var type = n0[1];
           var head = n0[0];
           var pstyle = {
@@ -637,8 +642,8 @@ var JangResult = function(){
         var $state = jkz[this.CalcObj.ba_kz] + "場 "
             + jkz[this.CalcObj.ch_kz] + "家 "
             + ["ロン", "ツモ"][(this.CalcObj.tsumo % 2)];
-        var $hai = hai.map(v => show_hi([[v, -1]])).join("");
-        var $furo = show_hi(furo);
+        var $hai = hai.map(v => $J.hitag(v)).join("");
+        var $furo = this.show_ments(furo);
         return $state + "<br>" + $hai + " " + $J.hitag(aghi) + " " + $furo;
     };
 
@@ -651,14 +656,14 @@ var JangResult = function(){
       var res = pvt_jhans[0];
       var ments = res.n.length;
 
-      var $ments = (n => {
-          if (n.length != 5) {
-              return '<tr><td>' + show_hi(res.n) + "</td></tr>";
+      var $ments = (ments => {
+          if (ments.length != 5) {
+              return '<tr><td>' + this.show_ments(ments) + "</td></tr>";
           }
-          return n.map(
-              (n, i) => 
+          return ments.map(
+              (m, i) => 
                   '<tr align="center">'
-                  + "<td>" + show_hi(n, true) + "</td>"
+                  + "<td>" + this.show_ments([m]) + "</td>"
                   + "<td>" + $J.type.toString(Calc.fueach()[1][i]) + Calc.fueach()[0][i] + "符</td>"
                   + "</tr>"
           ).join("");
@@ -691,7 +696,7 @@ var JangResult = function(){
       if (1 == pvt_jhans.length) return $hai + $table;
 
       var $another = '[他の面子の切り方]' +
-          pvt_jhans.slice(1).map(ret => "<div>" + ret.jhan + "<br>" + show_hi(ret.n) + "</div>")
+          pvt_jhans.slice(1).map(ret => "<div>" + ret.jhan + "<br>" + this.show_ments(ret.n) + "</div>")
           .join("");
 
       return $hai + $table + $another;
@@ -939,55 +944,10 @@ var HandSet = function(n)
       (is_n ? this.n : this.hai).splice(order, 1);
       return this;
   };
-}
+};
 
 var base64list = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';
 var base64encode = s => s.map(b => base64list.charAt(b & 0x3f)).join("");
 var base64decode = t => t.split("").map(c => base64list.indexOf(c));
 
 //////////////////////////////////////////////////////
-
-///////// UnitTest
-var UnitTest = function() {
-    var ResObj  = new JangResult();
-    [
-        //一翻手
-        {id:"AIAADQJpABNPb", h:2,f:40},
-        {id:"FKAAFQJJIFKKW", h:5,f:20},
-        //二翻手
-        {id:"FBAAJQJJeADGJ", h:4,f:30},
-        {id:"FAAAaQJJeAGJY", h:3,f:30},
-        {id:"FAAABQJBEBBKT", h:2,f:30},
-        {id:"FIAAWQlcWDMVg", h:5,f:50},
-        {id:"FBAAHHDEGHKLM", h:4,f:25},
-        {id:"FAAARQkcgFRbe", h:2,f:50},
-        {id:"FIAAgQkjRFbeg", h:5,f:50},
-        {id:"FIAAfQBsfNXgh", h:4,f:50},
-        {id:"FIAARQkrJARah", h:5,f:60},
-        {id:"CIAAJQpudJSah", h:4,f:90},
-        //三翻手
-        {id:"FIAAEQJbEBBch", h:5,f:30},
-        {id:"CBAAHQJJRFFTT", h:5,f:30},
-        {id:"CAAAUQIBRAJSY", h:3,f:30},
-        //清一色
-        {id:"CAAATQJIZSSVY", h:6,f:30},
-        {id:"CAAAZQJJaTTVX", h:8},
-        //役満
-        {id:"CIAAZQkkNLZbd", h:13},
-        {id:"BAAARNb",       h:13},
-        {id:"AIAAhNb",       h:13},
-        {id:"GYAAVQIsXTTZg", h:13},
-        {id:"GAAAIQccIAJRS", h:13},
-        {id:"FAAANQhbdLbce", h:13},
-        {id:"EAAAbQccJbcde", h:13},
-        {id:"GIAAcQuucBIQg", h:13},
-        {id:"GYAAfQjbdcfgh", h:26},
-    ].forEach(v => {
-        ResObj.get_result_by_id(v.id).run();
-        var $head = (v.h == ResObj.CalcObj.han()) &&
-            (!v.f || v.f == ResObj.CalcObj.fu(true)) ?
-            "<div class=test>" : "<div class='test fail'>";
-        document.getElementById("result").innerHTML +=
-            $head + ResObj.result_table() + "</div>";
-    });
-};

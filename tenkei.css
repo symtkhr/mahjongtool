@@ -30,12 +30,12 @@ h4 {
   height: 180px;
 }
 #titlebox, #config {
-  background-color: #0c6;
+  background-color: #66aa66;
 }
 #quiz {
   clear:both;
   padding:5px;
-  background-color: #0c6;
+  background-color: #6a6;
   //height: 150px;
 }
 #presentation, #config {
@@ -176,4 +176,10 @@ table.wanpai tbody tr td{
 }
 #result {
   clear:both;
+}
+.tile {
+  display:inline-block; overflow:hidden; width:18px; height:24px; position:relative;
+}
+.tile img {
+   position:relative;
 }

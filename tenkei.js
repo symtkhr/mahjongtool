@@ -13,17 +13,17 @@ var gPsgID;
 var gRtime;
 var gQObj;
 var gResObj;
-var QHand; //²¿¤È¤«¤·¤¿¤¤..
+var QHand; //ä½•ã¨ã‹ã—ãŸã„..
 
 var PointQuiz = function(){
   this.QHand;
   this.QStat;
   this.level;
-  this.yaku_id; // Ìò[99¥é¥ó¥À¥à/0°ìÄÌ/1Á´ÂÓ/2»°¿§/3º®°ì/4ÃÇ/5ÂĞÂĞ/6ÌòÇ×/7¼·ÂĞ»Ò/8Ê¿ÏÂ]
+  this.yaku_id; // å½¹[99ãƒ©ãƒ³ãƒ€ãƒ /0ä¸€é€š/1å…¨å¸¯/2ä¸‰è‰²/3æ··ä¸€/4æ–­/5å¯¾å¯¾/6å½¹ç‰Œ/7ä¸ƒå¯¾å­/8å¹³å’Œ]
   this.dora;
   this.mnt;
   this.stRange;
-  ////////////////// ÌäÂêºîÀ®
+  ////////////////// å•é¡Œä½œæˆ
   this.make_quiz0 = function(level){
     var is_define = false;
     var target_lv = [0,5,15,30,50,200];
@@ -35,26 +35,26 @@ var PointQuiz = function(){
       var yaku_id = this.yaku_define(level);
       $("#debug").append("yaku_id = "+style_redbold(yaku_id)+"<br>");
       for(var i=0; i<15; i++){
-	if(i%3 == 0 && i>0){ lower_lv--; upper_lv++; }
-	var is_limited2menzen = ( Math.random() * 3 < 1 )? false : true;
-	if( yaku_id == 5 ) is_limited2menzen = false;
-	if( yaku_id == 8 ) is_limited2menzen = true;
-	this.make_stats();
-	var is_allowed2kong = (Math.random() * 3 < 1);
-	if(level == 5) is_allowed2kong = true;
-	this.make_hands(is_limited2menzen, is_allowed2kong);
-	this.calc_ans();
-	this.apply_doraconfig();
-	var lv = this.level_det();
-	if(level > 0 && level <= MAX_LEVEL &&
-	   (lv < 0 || lv < lower_lv || lv > upper_lv)) continue;
-	is_define = true;
-	break;
+        if(i%3 == 0 && i>0){ lower_lv--; upper_lv++; }
+        var is_limited2menzen = ( Math.random() * 3 < 1 )? false : true;
+        if( yaku_id == 5 ) is_limited2menzen = false;
+        if( yaku_id == 8 ) is_limited2menzen = true;
+        this.make_stats();
+        var is_allowed2kong = (Math.random() * 3 < 1);
+        if(level == 5) is_allowed2kong = true;
+        this.make_hands(is_limited2menzen, is_allowed2kong);
+        this.calc_ans();
+        this.apply_doraconfig();
+        var lv = this.level_det();
+        if(level > 0 && level <= MAX_LEVEL &&
+           (lv < 0 || lv < lower_lv || lv > upper_lv)) continue;
+        is_define = true;
+        break;
       }
     }
     gResObj.HandObj.t[this.QStat.aghi]--;
   }
-  ////////////////// ¥ì¥Ù¥ëÊÌÌòÀßÄê
+  ////////////////// ãƒ¬ãƒ™ãƒ«åˆ¥å½¹è¨­å®š
   this.yaku_define = function(level){
     var odds = Array(8);
     odds[1] = [ 8, 4, 4, 4, 1, 4,1,4,30,40,1,1,1,1,1];
@@ -80,37 +80,37 @@ var PointQuiz = function(){
     this.yaku_id = yaku_id;
     return yaku_id;
   }
-  ////////////////// ÌäÂê¥ì¥Ù¥ëÈ½Äê
+  ////////////////// å•é¡Œãƒ¬ãƒ™ãƒ«åˆ¤å®š
   this.level_det = function(){
     var lv = 0;
     var QStat = gResObj.CalcObj;
     var num_kots = 0;
     var fu_sum = 0;
-    if(QStat.fueach.length > 0){
+    if(QStat.fueach().length > 0){
       for( var i=0; i<7; i++ ){
-        if( QStat.fueach[0][i] == 0 ) continue;
-        fu_sum += QStat.fueach[0][i];
-        if(i<5 && QStat.fueach[1][i]!= 2 ) num_kots++;
+          if( QStat.fueach()[0][i] == 0 ) continue;
+          fu_sum += QStat.fueach()[0][i];
+          if(i<5 && QStat.fueach()[1][i]!= 2 ) num_kots++;
       }
     }
     var is_tsumo  = (QStat.tsumo % 2);
     var is_menzen = gResObj.HandObj.n.length == 0;
-    var is_mangan = (QStat.point[0] >= 8000 && QStat.ch_kz > 0) ||
-      (QStat.point[0] >= 12000 && QStat.ch_kz == 0 );
-    var is_tenkei = (Math.pow(2, QStat.han) * QStat.fu <= 512) && fu_sum >= 10;
-    var is_pingf = (QStat.yaku.index("Ê¿ÏÂ(1)") >= 0 );
-    var is_7toi  = (QStat.fu == 25 );
+    var is_mangan = (QStat.point(0) >= 8000 && QStat.ch_kz > 0) ||
+        (QStat.point(0) >= 12000 && QStat.ch_kz == 0 );
+    var is_tenkei = (Math.pow(2, QStat.han()) * QStat.fu(true) <= 512) && fu_sum >= 10;
+    var is_pingf = (QStat.yaku().indexOf("å¹³å’Œ(1)") >= 0 );
+    var is_7toi  = (QStat.fu(true) == 25 );
 
-    /*[ÌÌ»ÒÀÚ¤êÊ¬¤±¤¬¤·¤Å¤é¤¤·Á¤ÎÈ½Äê]
-      "Â¾¤ÎÌÌ»Ò¤ÎÀÚ¤êÊı"¤¬¤¢¤ë or
-      °ì¿§9Ëç°Ê¾å¤ÎÏ¢Â³Ç×»Ñ·Á + 3Ëç»ı¤Á¤ò´Ş¤à¤â¤Î: 122233344, 122333445
+    /*[é¢å­åˆ‡ã‚Šåˆ†ã‘ãŒã—ã¥ã‚‰ã„å½¢ã®åˆ¤å®š]
+      "ä»–ã®é¢å­ã®åˆ‡ã‚Šæ–¹"ãŒã‚ã‚‹ or
+      ä¸€è‰²9æšä»¥ä¸Šã®é€£ç¶šç‰Œå§¿å½¢ + 3æšæŒã¡ã‚’å«ã‚€ã‚‚ã®: 122233344, 122333445
     */
     var is_hardments = ( gResObj.HandObj.ns.length > 1);
     var t = gResObj.HandObj.t;
     for(var i=0; i<27 && !is_hardments; i++){
       if(i%9==0 || t[i]==0){
-	var seq = 0;
-	var possible = false;
+        var seq = 0;
+        var possible = false;
       }
       seq += t[i];
       if(t[i] >= 3) possible = true;
@@ -119,114 +119,114 @@ var PointQuiz = function(){
 
     var debug = "";
 
-    if( QStat.ch_kz == 0 && !is_tsumo){ lv +=  3; debug +="+¿Æ±É"; }
-    if( is_tsumo )                    { lv +=  5; debug +="+¼«ÌÎ"; }
-    if( is_hardments )                { lv += 10; debug +="+ÀÚÊ¬¤±Æñ"; }
+    if( QStat.ch_kz == 0 && !is_tsumo){ lv +=  3; debug +="+è¦ªæ „"; }
+    if( is_tsumo )                    { lv +=  5; debug +="+è‡ªæ‘¸"; }
+    if( is_hardments )                { lv += 10; debug +="+åˆ‡åˆ†ã‘é›£"; }
 
-    //----- Ëş´ÓÌ¤Ëş ------------- 
+    //----- æº€è²«æœªæº€ ------------- 
     if(!is_mangan || is_tenkei){
-      lv += num_kots * 5; debug += "+"+num_kots+"¹ï»Ò";
-      if( !is_pingf && !is_7toi ){ lv +=  7; debug +="+ÈóÊ¿ÏÂ¼·ÂĞ"; }
-      //if( kots >= 1 && is_menzen && fu_sum >=6 && !is_tsumo){ lv += 7; debug += "+ÌçÁ°±É"; }
-      if( QStat.han < 4 ){
-	if(fu_sum == 10 || fu_sum == 12) { lv += 10;     debug += "+Éä10-12"; } // Éä¥Ï¥Í¤Î¥®¥ê¥é¥¤¥ó
-	if(fu_sum == 14 || fu_sum == 16) { lv += 5;      debug += "+Éä14-16"; }
-	if(fu_sum >= 18 )                { lv += fu_sum; debug += "+Éä" + fu_sum; }
-	if( Math.ceil(QStat.fu/10) == 7 )                    { lv += 10; debug += "+70Éä"; } 
-	if( Math.ceil(QStat.fu/10) == 9 && QStat.ch_kz == 0 ){ lv += 10; debug += "+90Éä¿Æ"; } 
+      lv += num_kots * 5; debug += "+"+num_kots+"åˆ»å­";
+      if( !is_pingf && !is_7toi ){ lv +=  7; debug +="+éå¹³å’Œä¸ƒå¯¾"; }
+      //if( kots >= 1 && is_menzen && fu_sum >=6 && !is_tsumo){ lv += 7; debug += "+é–€å‰æ „"; }
+      if( QStat.han() < 4 ){
+        if(fu_sum == 10 || fu_sum == 12) { lv += 10;     debug += "+ç¬¦10-12"; } // ç¬¦ãƒãƒã®ã‚®ãƒªãƒ©ã‚¤ãƒ³
+        if(fu_sum == 14 || fu_sum == 16) { lv += 5;      debug += "+ç¬¦14-16"; }
+        if(fu_sum >= 18 )                { lv += fu_sum; debug += "+ç¬¦" + fu_sum; }
+        if(QStat.fu(true) == 70 )                    { lv += 10; debug += "+70ç¬¦"; } 
+        if(QStat.fu(true) == 90 && QStat.ch_kz == 0 ){ lv += 10; debug += "+90ç¬¦è¦ª"; } 
       }
       $("#debug").append("Tk_lv=" + lv +" ["+debug+"]<br>");
       return lv;
     }
-    //----- Ëş´Ó°Ê¾å ------------- 
-    if(QStat.han > 20) return -1; // ¥À¥Ö¥ëÌòËş
+    //----- æº€è²«ä»¥ä¸Š ------------- 
+    if(QStat.han() > 20) return -1; // ãƒ€ãƒ–ãƒ«å½¹æº€
     var yakulen_pin7cmplx = 0;
     var yakulen_forgetful = 0;
     var is_chin = false;
 
     for(var i=0; i<QStat.yaku.length; i++){
-      if(QStat.yaku[i].match(/^(Ê¿ÏÂ|Î©Ä¾|°ìÈ¯|¼«ÌÎ|ÃÇÖö|¼·ÂĞ»Ò)/)) continue;
-      if(QStat.yaku[i].match(/^À¶°ì¿§/)){ var is_chin = true; continue; }
+      if(QStat.yaku[i].match(/^(å¹³å’Œ|ç«‹ç›´|ä¸€ç™º|è‡ªæ‘¸|æ–­å¹º|ä¸ƒå¯¾å­)/)) continue;
+      if(QStat.yaku[i].match(/^æ¸…ä¸€è‰²/)){ var is_chin = true; continue; }
       yakulen_pin7cmplx++;
       if(QStat.yaku[i].indexOf("(1)") > 0 || QStat.yaku[i].indexOf("(13)") > 0) continue;
-      if(QStat.yaku[i].match(/^(º®°ì¿§\(2\)|ÂĞ¡¹ÏÂ|Á´ÂÓ|»°¿§Æ±½ç|°ìµ¤ÄÌ´Ó|¾®»°¸µ|¼·ÂĞ»Ò)/))
-	continue;
+      if(QStat.yaku[i].match(/^(æ··ä¸€è‰²\(2\)|å¯¾ã€…å’Œ|å…¨å¸¯|ä¸‰è‰²åŒé †|ä¸€æ°—é€šè²«|å°ä¸‰å…ƒ|ä¸ƒå¯¾å­)/))
+        continue;
       yakulen_forgetful++;
     }
-    if(QStat.han <= 3){ lv += 20; debug += "+»°ËİËş´Ó" }
-    if( QStat.yaku.length == 1 && QStat.han == 13) // Ã±°ìÌòËş
+    if(QStat.han() <= 3){ lv += 20; debug += "+ä¸‰ç¿»æº€è²«" }
+      if( QStat.yaku.length == 1 && QStat.han() == 13) // å˜ä¸€å½¹æº€
       lv += 0;
-    else if( (!is_chin && is_pingf) || is_7toi ) // Ê¿ÏÂ¤Ş¤¿¤Ï¼·ÂĞ»Ò
-      lv += (yakulen_pin7cmplx + yakulen_forgetful + (QStat.dora ? 1:0) - 1) * (QStat.han - 1);
-    else { // ¤½¤ÎÂ¾
-      lv += (QStat.yaku.length + yakulen_forgetful + (QStat.dora ? 1:0) - 1) * (QStat.han - 1);
-      debug += " + " + (QStat.yaku.length + yakulen_forgetful + (QStat.dora ? 1:0)) + "Ìò" + QStat.han + "Ëİ";
+    else if( (!is_chin && is_pingf) || is_7toi ) // å¹³å’Œã¾ãŸã¯ä¸ƒå¯¾å­
+        lv += (yakulen_pin7cmplx + yakulen_forgetful + (QStat.dora ? 1:0) - 1) * (QStat.han() - 1);
+    else { // ãã®ä»–
+      lv += (QStat.yaku.length + yakulen_forgetful + (QStat.dora ? 1:0) - 1) * (QStat.han() - 1);
+      debug += " + " + (QStat.yaku.length + yakulen_forgetful + (QStat.dora ? 1:0)) + "å½¹" + QStat.han() + "ç¿»";
     }
     $("#debug").append("Mg_lv=" + lv +" ["+debug+"]<br>");
     return lv;
   }
-  ////////////////// ÌÌ»ÒºîÀ®
+  ////////////////// é¢å­ä½œæˆ
   this.make_ments = function(order){
     var i = order;
     var yaochu = [0,8,9,17,18,26,27,28,29,30,31,32,33];
     var type = (i==4) ? 2:(parseInt(Math.random()*5)<4 ? 1:4);
-    // ¢¬³ÆÌÌ»Ò¤Î¼ïÊÌ <0-6 = ÌÀ½ç/°Å½ç/ÂĞ»Ò/ÌÀ¹ï/°Å¹ï/ÌÀÜÊ/°ÅÜÊ>
+    // â†‘å„é¢å­ã®ç¨®åˆ¥ <0-6 = æ˜é †/æš—é †/å¯¾å­/æ˜åˆ»/æš—åˆ»/æ˜æ§“/æš—æ§“>
     var head = parseInt(Math.random()*34);
     var range = this.stRange;
-    var mai = QHand.mai;
+    var mai = QHand.mai();
     var QStat = this.QStat;
     
     switch(this.yaku_id){
-    case 0: // °ìÄÌ
+    case 0: // ä¸€é€š
       if(i>=3) break; 
       if(i==0) range = parseInt(Math.random()*3);
       head = 9*range + 3*i;
       type = 1;
       break;
-    case 1: // Á´ÂÓ
+    case 1: // å…¨å¸¯
       head = yaochu[parseInt(Math.random()*13)];
       if(type == 1 && head%9==8) head -= 2;
       break;
-    case 2: // »°¿§
+    case 2: // ä¸‰è‰²
       if(i>=3) break; 
       if(i==0) range = parseInt(Math.random()*7);
       head = range + 9*i;
       type = 1;
       break;
-    case 3: // º®°ì
+    case 3: // æ··ä¸€
       if(i==0) range = parseInt(Math.random()*3);
-      head = 18 +¡¡parseInt(Math.random()*16);
+      head = 18 +ã€€parseInt(Math.random()*16);
       if(head<27) head -= range*9;
       break;
-    case 4: // ÃÇ
+    case 4: // æ–­
       head = 0;
       while(head%9==0 || head%9==8 || (head%9==6 && type==1))
         head = parseInt(Math.random()*27);
       break;
-    case 5: // ÂĞ¡¹
+    case 5: // å¯¾ã€…
       type = (i==4)?2:4;
       head = parseInt(Math.random()*34);
       break;
-    case 6: // ÌòÇ× 
+    case 6: // å½¹ç‰Œ 
       if( i>0) break; 
       type = 4;
       head = 0;
       while(head!=QStat.ba_kz && head!=QStat.ch_kz && head<4)
-	head = parseInt(Math.random()*7);
+        head = parseInt(Math.random()*7);
       head +=27;
       break;
-    case 7: // ¼·ÂĞ»Ò
+    case 7: // ä¸ƒå¯¾å­
       type = 2;
       while(mai[head]>0) head = parseInt(Math.random()*34);
       break;
-    case 8: // Ê¿ÏÂ
+    case 8: // å¹³å’Œ
       if(i==4)
         while( head>30 || head== QStat.ch_kz+27 || head == QStat.ba_kz+27)
           head = parseInt(Math.random()*30);
       else
         type = 1;
       break;
-    case 9: // ÎĞ°ì¿§
+    case 9: // ç·‘ä¸€è‰²
       var tmp = parseInt(Math.random()*12);
       if( i < 4 ) type = ( tmp < 4 ) ? 1 : 4;
       if( tmp < 5 ) head = 19;
@@ -236,22 +236,22 @@ var PointQuiz = function(){
       else if( tmp == 8 ) head = 25;
       else if( tmp >= 9 ) head = 32;
       break;
-    case 10: // Ï·Æ¬ÏÂ
+    case 10: // è€é ­å’Œ
       head = yaochu[parseInt(Math.random()*13)];
       if( i < 4 ) type = 4;
       break;
-    case 11: // Âç»°¸µ
+    case 11: // å¤§ä¸‰å…ƒ
       if(i>=3) break;
       head = 31 + i;
       type = 4;
       break;
-    case 12: // »ú°ì
+    case 12: // å­—ä¸€
       head = 27 + parseInt(Math.random()*7);
       if( i < 4 ) type = 4;
       break;
     }
     
-    // ¿¶¤êÄ¾¤·
+    // æŒ¯ã‚Šç›´ã—
     if(type==1 && ( head>=27 || head%9>=7 ) ) return false;
     if(type==4 && mai[head]>1) return false;
     if(type==2 && mai[head]>2) return false;
@@ -261,30 +261,30 @@ var PointQuiz = function(){
     return [head, type];
   }
 
-  ////////////////// ÉûÏªÀßÄê
+  ////////////////// å‰¯éœ²è¨­å®š
   this.make_furo = function(is_limited2menzen, is_allowed2kong ){
     var mnt = this.mnt;
     var n = QHand.n;
     var head, type;
-    var mai = QHand.mai;
+    var mai = QHand.mai();
     
     for(var i = mnt-1; i>=0; i--){
       head = n[i][0];
       type = n[i][1];
       if(type==2 || Math.random()*2 < 1) continue;
-      if(!is_limited2menzen && type==1) n[i][1] = 0; // ÌÀ½ç²½
+      if(!is_limited2menzen && type==1) n[i][1] = 0; // æ˜é †åŒ–
       if(type==4){
         var tmp = parseInt(Math.random()*3);
         if(is_limited2menzen){
           if(mai[head]!=4 && is_allowed2kong && tmp==2) n[i][1] = 6;
-        } else if(tmp==0 || mai[head] ==4 || !is_allowed2kong) n[i][1] = 3; // ÌÀ¹ï²½
-        else if(tmp==1) n[i][1] = 5; // ÌÀÜÊ²½
-        else if(tmp==2) n[i][1] = 6; // °ÅÜÊ²½
+        } else if(tmp==0 || mai[head] ==4 || !is_allowed2kong) n[i][1] = 3; // æ˜åˆ»åŒ–
+        else if(tmp==1) n[i][1] = 5; // æ˜æ§“åŒ–
+        else if(tmp==2) n[i][1] = 6; // æš—æ§“åŒ–
       }
     }
   }
 
-  ////////////////// ÏÂÎ»·ÁºîÀ®
+  ////////////////// å’Œäº†å½¢ä½œæˆ
   this.make_hands = function(is_limited2menzen, is_allowed2kong ){
     var yaku_id = this.yaku_id;
     this.QHand = new HandSet();
@@ -297,21 +297,21 @@ var PointQuiz = function(){
       is_limited2menzen = true;
     if( yaku_id>=9 && yaku_id<=12 ) is_limited2menzen = false;
     
-    // ¹ñ»Î
+    // å›½å£«
     if(yaku_id==13){
       for(i=0;i<13;i++) QHand.t[yaochu[i]] = 1;
       QHand.t[yaochu[parseInt(Math.random()*13)]]++;
       mnt = 0;
     }
-    // ¶åÏ¢ÊõÅõ
+    // ä¹é€£å®ç‡ˆ
     
-    // °ìÈÌ¼ê
+    // ä¸€èˆ¬æ‰‹
     while(order < mnt ){
       do{
         var n_fac = this.make_ments(order);
       }while( n_fac === false )
       n.push(n_fac);
-      QHand.nt2mai();
+        //QHand.nt2mai();
       order++;
     }
 
@@ -319,47 +319,47 @@ var PointQuiz = function(){
     if(!is_limited2menzen || is_allowed2kong) this.make_furo(is_limited2menzen, is_allowed2kong );
   }
 
-  ////////////////// ¥É¥éÉ½¼¨Ç×
+  ////////////////// ãƒ‰ãƒ©è¡¨ç¤ºç‰Œ
   this.get_dora_indicator = function(dora){
     if(dora==0 || dora==9 || dora==18 ) return dora+8;
     if(dora==27 ) return dora+3;
     if(dora==31 ) return dora+2;
     return dora-1;
   }
-  ////////////////// »ØÄê¤·¤¿¿ô¤Î¥É¥é¤òºÜ¤»¤ë
+  ////////////////// æŒ‡å®šã—ãŸæ•°ã®ãƒ‰ãƒ©ã‚’è¼‰ã›ã‚‹
   this.apply_doraconfig = function(){
     var QStat = this.QStat;
-    var mangan_han = Math.LOG2E * Math.log(50 / Math.ceil(QStat.fu/10));
+    var mangan_han = Math.LOG2E * Math.log(50 / (QStat.fu(true)/10));
     var dora_lower = 0;
     var dora_upper = 3;
-    if(QStat.han < mangan_han) 
-      dora_upper = Math.floor(mangan_han) - QStat.han;
+    if(QStat.han() < mangan_han) 
+      dora_upper = Math.floor(mangan_han) - QStat.han();
 
-    // ¥É¥é¤òºÜ¤»¤ë
+    // ãƒ‰ãƒ©ã‚’è¼‰ã›ã‚‹
     for(var i=0; i<50; i++){
       QStat.dora = this.set_dora();
       if(QStat.dora < dora_lower || QStat.dora > dora_upper) continue;
       break;
     }
-    // Åú¤¨¤òºÆ·×»»¤¹¤ë
+    // ç­”ãˆã‚’å†è¨ˆç®—ã™ã‚‹
     gResObj.CalcObj = QStat;
-    gResObj.get_result();
+    gResObj.run();
     res = gResObj.result;
 
-    $("#debug").append("¥É¥é = " + QStat.dora+"¸Ä/{"+dora_lower+"~"+dora_upper+"}<br>");
+    $("#debug").append("ãƒ‰ãƒ© = " + QStat.dora+"å€‹/{"+dora_lower+"~"+dora_upper+"}<br>");
   }
-  ////////////////// ¥É¥éºÜ¤»
+  ////////////////// ãƒ‰ãƒ©è¼‰ã›
   this.set_dora = function(){
     this.dora = [];
     var num_dora = 1;
     var dora_sum = 0;
     var n = this.QHand.n;
     var QStat = this.QStat;
-    var mai = this.QHand.mai;
+    var mai = this.QHand.mai();
     for(var i=0; i<n.length; i++) if(n[i][1]>=5) num_dora++;
     if(QStat.reach) num_dora *= 2;
     var i=0;
-    var maitak = mai.clone();
+    var maitak = mai.slice();
     while(i<num_dora){
       var dora = parseInt(Math.random()*34);
       dora_ind = this.get_dora_indicator(dora);
@@ -371,52 +371,46 @@ var PointQuiz = function(){
     }
     return dora_sum;
   }
-  ////////////////// ÏÂÎ»¾ò·ïºîÀ®
+  ////////////////// å’Œäº†æ¡ä»¶ä½œæˆ
   this.make_stats = function(){
     this.QStat = new HandCalc();
     var QStat = this.QStat;
     
-    // ¾õ¶·ÀßÄê
-    QStat.ba_kz = parseInt(Math.random()*2); // ¾ì [0Åì/1Æî/2À¾/3ËÌ]
-    QStat.ch_kz = parseInt(Math.random()*4); // ²È [0Åì/1Æî/2À¾/3ËÌ]
-    QStat.tsumo = parseInt(Math.random()*2); // ¤¢¤¬¤êÊı [0¥í¥ó/1¥Ä¥â]
+    // çŠ¶æ³è¨­å®š
+    QStat.ba_kz = parseInt(Math.random()*2); // å ´ [0æ±/1å—/2è¥¿/3åŒ—]
+    QStat.ch_kz = parseInt(Math.random()*4); // å®¶ [0æ±/1å—/2è¥¿/3åŒ—]
+    QStat.tsumo = parseInt(Math.random()*2); // ã‚ãŒã‚Šæ–¹ [0ãƒ­ãƒ³/1ãƒ„ãƒ¢]
     var rnd_rh = parseInt(Math.random()*100);
     
-    // Î©Ä¾ [0¥À¥Ş/1Î©Ä¾/2Î©Ä¾°ìÈ¯(/3WÎ©Ä¾/4WÎ©Ä¾°ìÈ¯)]
+    // ç«‹ç›´ [0ãƒ€ãƒ/1ç«‹ç›´/2ç«‹ç›´ä¸€ç™º(/3Wç«‹ç›´/4Wç«‹ç›´ä¸€ç™º)]
     if(rnd_rh<40)      QStat.reach = 0;
     else if(rnd_rh<97) QStat.reach = 1;
     else               QStat.reach = 2;
   }
     
-  ////////////////// Åú¤¨¤Î·×»»
+  ////////////////// ç­”ãˆã®è¨ˆç®—
   this.calc_ans = function(){
     var QStat = this.QStat;
     var QHand = this.QHand;
     var n = this.QHand.n;
-    // Ê¿ÏÂ¤Î¾ì¹ç¡¢¤³¤³¤ÇÏÂÎ»Ç×¼èÆÀ
+    // å¹³å’Œã®å ´åˆã€ã“ã“ã§å’Œäº†ç‰Œå–å¾—
     var aghi = -1;
     if(this.yaku_id==8)
       do
         aghi = n[parseInt(Math.random()*4)][0] + 2*(parseInt(Math.random()*2));
       while(aghi%9==2 || aghi%9 == 6 );
 
-    // ÏÂÎ»Ç×¼èÆÀ
-    QHand.n2nt();
-    QHand.t2hai();
+    // å’Œäº†ç‰Œå–å¾—
+    QHand.is_valid();
     var pos = parseInt(Math.random()*QHand.hai.length);
     QStat.aghi = (aghi == -1) ? QHand.hai[pos] : aghi;
-    
-    QHand.nt2mai(); // ÉÔÍ×?
-    //QStat.dora = this.set_dora();
 
-    // Åú¤¨¤ò·×»»¤¹¤ë
+    // ç­”ãˆã‚’è¨ˆç®—ã™ã‚‹
     gResObj  = new JangResult();
-    gResObj.HandObj = QHand;
-    gResObj.CalcObj = QStat;
-    gResObj.get_result();
+    gResObj.config_show_haishi(false).run(QHand, QStat);
 
-    // 0ÅÀ¤Î¾ì¹ç
-    if(gResObj.CalcObj.point[0] == 0){
+    // 0ç‚¹ã®å ´åˆ
+    if(gResObj.CalcObj.point(0) == 0){
       if( parseInt(Math.random() * 4) == 0 )
         QStat.tsumo = 1;
       else {
@@ -424,10 +418,8 @@ var PointQuiz = function(){
         QStat.tsumo = parseInt(Math.random()*2);
       }
       gResObj.CalcObj = QStat;
-      gResObj.get_result();
+      gResObj.run();
     }
-
-    //gResObj.HandObj.t[QStat.aghi]--;
   }
 }
 var gMode = {
@@ -438,7 +430,7 @@ var gMode = {
  is_ansopt: false
 };
  
-////////////////// ¾õÂÖÁ«°Ü
+////////////////// çŠ¶æ…‹é·ç§»
 function state_machine(){
   var QSTATE = {
    INIT_GAME     : 0,
@@ -496,14 +488,14 @@ function state_machine(){
   }
 }
 
-////////////////// ¥Á¥§¥Ã¥¯¥Ü¥Ã¥¯¥¹ÆÉ¼è¤ê
+////////////////// ãƒã‚§ãƒƒã‚¯ãƒœãƒƒã‚¯ã‚¹èª­å–ã‚Š
 function is_checked(selector){
-  var checked = $(selector).attr('checked');
-  if(checked==="false") checked = false; // docomo¥Õ¥ë¥Ö¥é¥¦¥¶¤Î¥Ğ¥°ÂĞºö
+  var checked = $(selector).prop('checked');
+  if(checked==="false") checked = false; // docomoãƒ•ãƒ«ãƒ–ãƒ©ã‚¦ã‚¶ã®ãƒã‚°å¯¾ç­–
   return checked;
 }
 
-////////////////// ½é´üÀßÄê
+////////////////// åˆæœŸè¨­å®š
 function init_config(){
   gMode.mode = $("#level_select").val();
   switch(parseInt(gMode.mode)){ 
@@ -523,8 +515,8 @@ function init_config(){
     if(gMode.is_ansopt && gMode.is_ansfu) gMode.is_ansfu = false;
   }
   if(gMode.is_ansopt){
-    $("#note_kb").html("(¥¯¥ê¥Ã¥¯Ä¾¸å¤ËÀµ²òÉ½¼¨)");
-    $("#title_kb").html("ÁªÂò»è");
+    $("#note_kb").html("(ã‚¯ãƒªãƒƒã‚¯ç›´å¾Œã«æ­£è§£è¡¨ç¤º)");
+    $("#title_kb").html("é¸æŠè‚¢");
   }
 
   if($("#opt_debug").attr('checked')){
@@ -538,14 +530,14 @@ function init_config(){
     show_stat();
     show_agari();
     $("#result").html(gResObj.result);
-    $("#start").val("³«»Ï(Enter)");
+    $("#start").val("é–‹å§‹(Enter)");
     return false;
   }
 
   return true;
 }
 
-////////////////// ¥ì¥Ù¥ëÉ½¼¨
+////////////////// ãƒ¬ãƒ™ãƒ«è¡¨ç¤º
 function show_level(){
   var strLevel;
   $("#result").html("");
@@ -555,14 +547,14 @@ function show_level(){
   else if(gLevel<0) strLevel = "LEVEL RANDOM";
   else strLevel = "LEVEL" + gLevel;
   $("#title").html("<h2>" + strLevel + "</h2>");
-  if(gMode.mode == 1) $("#title").append("Îı½¬¥â¡¼¥É");
+  if(gMode.mode == 1) $("#title").append("ç·´ç¿’ãƒ¢ãƒ¼ãƒ‰");
 }
-/////////////// ½ĞÂê
+/////////////// å‡ºé¡Œ
 function question(){
   $("#titlebox").hide();
   $("#presentation").show();
   if(gMode.mode != 2){
-    $("#card").html("(ÌäÂêºîÀ®Ãæ)");
+    $("#card").html("(å•é¡Œä½œæˆä¸­)");
     gQObj = new PointQuiz;
     gQObj.make_quiz0(gLevel<0 ? 6 : gLevel);
   }
@@ -571,17 +563,17 @@ function question(){
   count_stop();
   count_start(5);
 }
-/////////////// Ä°Ç×·ÁÉ½¼¨
+/////////////// è´ç‰Œå½¢è¡¨ç¤º
 function show_tingpai(){
   var is_reach = gResObj.CalcObj.reach;
   var QStat = gResObj.CalcObj;
   var output_string = "";
-  var char_kz = new Array("Åì","Æî","À¾","ËÌ");
+  var char_kz = "æ±å—è¥¿åŒ—";
 
-  $("#fieldplate").html(char_kz[QStat.ba_kz]+ "¾ì");
+  $("#fieldplate").html(char_kz[QStat.ba_kz]+ "å ´");
   show_dora(true);
-  output_string += char_kz[QStat.ch_kz]+ "²È ";
-  if(is_reach) output_string += '<img src="./haiga/reach.png" alt="Î©Ä¾ËÀ">';
+  output_string += char_kz[QStat.ch_kz]+ "å®¶ ";
+  if(is_reach) output_string += '<img src="reach.png" alt="ç«‹ç›´æ£’">';
   output_string += "<br>";
   var t = gResObj.HandObj.t;
   var n = gResObj.HandObj.n;
@@ -591,31 +583,29 @@ function show_tingpai(){
   }
   output_string += ' <span id="agari"></span>';
   $("#card").html( output_string );
-  output_string = "";
-  if(n.length>0) output_string += " " +  TmpResObj.show_hi(n, false);
-  $("#furo").html( output_string );
+  $("#furo").html(" " +  TmpResObj.show_ments(n));
 }
 
-/////////////// ¾õ¶·É½¼¨
+/////////////// çŠ¶æ³è¡¨ç¤º
 function show_stat(){
   var QStat = gResObj.CalcObj;
-  var char_kz = new Array("Åì","Æî","À¾","ËÌ");
-  var char_rh = QStat.reach ? 'Î©Ä¾':"¥À¥Ş";
+  var char_kz = new Array("æ±","å—","è¥¿","åŒ—");
+  var char_rh = QStat.reach ? 'ç«‹ç›´':"ãƒ€ãƒ";
   var queue = "";
 
-  queue += (QStat.ch_kz==0 ? style_redbold("¿Æ") : "»Ò" ) + "¤¬"; 
+  queue += (QStat.ch_kz==0 ? style_redbold("è¦ª") : "å­" ) + "ãŒ"; 
   queue += char_rh;
-  queue += ' <span id="quest">¤ÇÄ°Ç×Ãæ¡£</span>';
+  queue += ' <span id="quest">ã§è´ç‰Œä¸­ã€‚</span>';
 
-  $("#ft").html( 'ÏÂÎ»¤Ş¤Ç:<br><span id="count" style="font-size:150%;">5</span>ÉÃ');
+  $("#ft").html( 'å’Œäº†ã¾ã§:<br><span id="count" style="font-size:150%;">5</span>ç§’');
   $("#level").html(gLevel);
-  $("#start").val("ÏÂÎ»(Enter)");
+  $("#start").val("å’Œäº†(Enter)");
   $("#command").html(queue);
   $("#result").html("");
   $("#inp_ans").val("");
-  $("#debug").append("ÅÀ = "+QStat.point[0]+" = "+QStat.point[2]+" &amp; "+QStat.point[1]);
+  $("#debug").append("ç‚¹ = "+QStat.point(0)+" = "+QStat.point(2)+" &amp; "+QStat.point(1));
 }
-/////////////// ¥É¥éÉ½¼¨
+/////////////// ãƒ‰ãƒ©è¡¨ç¤º
 function show_dora(is_omote){
   var num_dora = gQObj.dora.length;
   var is_reach = gQObj.QStat.reach;
@@ -626,98 +616,96 @@ function show_dora(is_omote){
 
   for(var i=0; i < (is_omote ? num_omote : num_dora); i++){
     var pos = i + 2;
-    if(is_reach && i >= num_omote) pos += 7 - num_omote; // ²¼ÃÊ
+    if(is_reach && i >= num_omote) pos += 7 - num_omote; // ä¸‹æ®µ
     var res = hi_tag(gQObj.get_dora_indicator(gQObj.dora[i]));
     $("table.wanpai td").eq(pos).html(res);
   }
   return;
 }
 var opt21 = [24, 32, 40, 48, 56, 64, 72, 80, 88, 96, 112, 128, 144, 160, 176, 192, 200, 300, 400, 600, 800];
-/////////////// ÁªÂò»èºîÀ®
+/////////////// é¸æŠè‚¢ä½œæˆ
 function make_options(is_tsumo, ch_kz){
     var res = "";
     for(var i=0; i<21; i++){
-	var val = opt21[i];
-	if(!ch_kz &&  is_tsumo) val *= 2;
-	if( ch_kz && !is_tsumo) val *= 4;
-	if(!ch_kz && !is_tsumo) val *= 6;
-	res += "<li>";
-	res += Math.ceil(val/10);
-	if( ch_kz &&  is_tsumo) res += " <br>"+Math.ceil(val * 2 / 10)
-	res += "</li>\n";
+        var val = opt21[i];
+        if(!ch_kz &&  is_tsumo) val *= 2;
+        if( ch_kz && !is_tsumo) val *= 4;
+        if(!ch_kz && !is_tsumo) val *= 6;
+        res += "<li>";
+        res += Math.ceil(val/10);
+        if( ch_kz &&  is_tsumo) res += " <br>"+Math.ceil(val * 2 / 10)
+        res += "</li>\n";
     }
     $(".calc").html(res);
     $(".calc li").css("width","40px").css("line-height", ( ch_kz && is_tsumo ? "30px":"60px"))
     .click( function(){
     try {
         $("#inp_ans").val($(this).text());
-	state_machine();
+        state_machine();
     } catch(e){}
     });
 }
-/////////////// ÏÂÎ»·ÁÉ½¼¨
+/////////////// å’Œäº†å½¢è¡¨ç¤º
 function show_agari(){
   var QStat = gResObj.CalcObj;
   var is_1patsu = QStat.reach==2 || QStat.reach==4;
   var tsumo = QStat.tsumo;
   var aghi = QStat.aghi;
-  var queue = "¤ÇÏÂÎ»¡£";
+  var queue = "ã§å’Œäº†ã€‚";
   var str1patsu = "";
-  if(is_1patsu) str1patsu = (gResObj.HandObj.n.length ? "" : "<br>") + style_redbold('°ìÈ¯');
+  if(is_1patsu) str1patsu = (gResObj.HandObj.n.length ? "" : "<br>") + style_redbold('ä¸€ç™º');
     
   if(gMode.is_ansopt) make_options(QStat.tsumo % 2, QStat.ch_kz);
   if(gMode.is_ansfu){
-    queue += "²¿Ëİ²¿Éä¡£<br>([Ëİ, Éä]¤Î·Á¼°¤ÇÆşÎÏ)";
+    queue += "ä½•ç¿»ä½•ç¬¦ã€‚<br>([ç¿», ç¬¦]ã®å½¢å¼ã§å…¥åŠ›)";
   }else if(tsumo%2==0) 
-    queue += "²¿ÅÀ¡£";
+    queue += "ä½•ç‚¹ã€‚";
   else if(QStat.ch_kz==0) 
-    queue += "²¿ÅÀ¥ª¡¼¥ë¡£";
+    queue += "ä½•ç‚¹ã‚ªãƒ¼ãƒ«ã€‚";
   else {
-    queue += "²¿ÅÀ¤º¤Ä¡£<br>([»Ò/¿Æ]¤Î·Á¼°¤ÇÆşÎÏ)";
+    queue += "ä½•ç‚¹ãšã¤ã€‚<br>([å­/è¦ª]ã®å½¢å¼ã§å…¥åŠ›)";
   }
   count_stop();
   
   var ag = machi_search();
-  var output_string='(';
-  for(var i=0; i<ag.length; i++) output_string += hi_tag(ag[i]);
-  output_string += "ÂÔ¤Á)";
+  var output_string = "(" + ag.map(tile => hi_tag(tile)).join("") + "å¾…ã¡)";
 
   if(gMode.is_timer)   
-    $("#ft").html( '²òÅú»ş´Ö:<br><span id="count" style="font-size:200%;">' + TIME_LIMIT + '</span>ÉÃ');
+    $("#ft").html( 'è§£ç­”æ™‚é–“:<br><span id="count" style="font-size:200%;">' + TIME_LIMIT + '</span>ç§’');
   else
     $("#ft").html('');
   show_dora(false);
-  $("#agari").html(str1patsu + (tsumo ? "¥Ä¥â":"¥í¥ó") + hi_tag(aghi));
-  $("#start").val("²òÅú(Enter)");
+  $("#agari").html(str1patsu + (tsumo ? "ãƒ„ãƒ¢":"ãƒ­ãƒ³") + hi_tag(aghi));
+  $("#start").val("è§£ç­”(Enter)");
   $("#result").html( output_string );
   $("#quest").html(queue);
   $("#tenkey").slideToggle(200);
   if(gMode.is_timer) count_start(TIME_LIMIT);
 }
-/////////////// ÂÔ¤ÁÇ×¸¡º÷
+/////////////// å¾…ã¡ç‰Œæ¤œç´¢
 function machi_search(){
   var p = new HandSet();
-  var n = [];
-  var ag = [];
-  p.t = gResObj.HandObj.t.clone();
-  //sum = m.length + n.length * 3;
-  for (var i=0; i<34; i++) {
-    if(gResObj.CalcObj.aghi == i){ ag.push(i); continue; }
-    if(gResObj.HandObj.mai[i]==4) continue;
-    p.t[i]++;
-    if(p.split_into_ments(false)) ag.push(i);
-    p.t[i]--;
-  }
-  return ag;
+  p.t = gResObj.HandObj.t.slice();
+  p.n = gResObj.HandObj.n.slice();
+  p.t2hai();
+  var mai = p.mai();
+  return [...Array(34)].map((zero, i) => i).filter(tile => {
+      if (gResObj.CalcObj.aghi == tile) return true;
+      if (mai[tile] == 4) return false;
+      p.hai.push(tile);
+      var ret = p.split();
+      p.hai.pop();
+      return ret;
+  });
 }
-////////////////// ¹çÈİÈ½Äê
+////////////////// åˆå¦åˆ¤å®š
 function admission(inp){
   var QStat = gResObj.CalcObj;
   var aghi = QStat.aghi;
   var inp  = $("#inp_ans").val();
   var is_timeleft = gRtime > 0 || !gMode.is_timer;
 
-  inp = inp.replace(/[£°-£¹]/g, function(s) {
+  inp = inp.replace(/[ï¼-ï¼™]/g, function(s) {
     return String.fromCharCode(s.charCodeAt(0) - 0xFEE0);
   });
   inp = inp.replace(/[^0-9]/g,' ');
@@ -731,19 +719,19 @@ function admission(inp){
 
   if(gMode.is_ansfu){
     if( valA < 5 && !valB && is_timeleft ) return false;
-    var fu_ceil = QStat.fu== 25 ? 25:Math.ceil(QStat.fu/10)*10;
-    if( QStat.han != valA ) is_correct = false;
-    else if( fu_ceil != valB && QStat.han <5 ) is_correct = false;
+    var fu_ceil = QStat.fu(true);
+    if( QStat.han() != valA ) is_correct = false;
+    else if( fu_ceil != valB && QStat.han() <5 ) is_correct = false;
   } else if(QStat.tsumo%2==0){
     if( valB && is_timeleft ) return false;
-    if(QStat.point[0] != valA && QStat.point[0] != valA*100 ) is_correct = false;
+    if(QStat.point(0) != valA && QStat.point(0) != valA*100 ) is_correct = false;
   } else if(QStat.ch_kz==0){
     if( valB && is_timeleft ) return false;
-    if(QStat.point[1] != valA && QStat.point[1] != valA*100 ) is_correct = false;
+    if(QStat.point(1) != valA && QStat.point(1) != valA*100 ) is_correct = false;
   } else {
     if( !valB && is_timeleft ) return false;
-    if(   ( QStat.point[2] != valA && QStat.point[2] != valA*100 )
-       || ( QStat.point[1] != valB && QStat.point[1] != valB*100 ) )
+    if(   ( QStat.point(2) != valA && QStat.point(2) != valA*100 )
+       || ( QStat.point(1) != valB && QStat.point(1) != valB*100 ) )
       is_correct = false;
   }
   var rtime = count_stop();
@@ -757,7 +745,7 @@ var NEXT = {
  LEVELUP  : 3,
  COMPLETE : 4
 };
-////////////////// ²òÅúÉ½¼¨
+////////////////// è§£ç­”è¡¨ç¤º
 function show_answer(is_correct){
   var QStat = gResObj.CalcObj;
   var swc_next = NEXT.PROCEED;
@@ -775,36 +763,36 @@ function show_answer(is_correct){
   }
   var show_ft = is_correct ?
     '<span style="color:red;  font-size:200%; font-weight:bold;">&#x25ef;</span>':
-    '<span style="color:blue; font-size:200%; font-weight:bold;">¡ß</span>';
+    '<span style="color:blue; font-size:200%; font-weight:bold;">Ã—</span>';
   if(is_correct){
-    show_ft += "<br>" + (swc_next == NEXT.LEVELUP ? style_redbold( "¾º³Ê!") : "Àµ²ò!");
+    show_ft += "<br>" + (swc_next == NEXT.LEVELUP ? style_redbold( "æ˜‡æ ¼!") : "æ­£è§£!");
   } else {
-    show_ft += "<br>Àµ²ò:";
+    show_ft += "<br>æ­£è§£:";
     if(QStat.tsumo%2==0){
-      show_ft += (QStat.point[0]/100);
+      show_ft += (QStat.point(0)/100);
     } else if(QStat.ch_kz==0){
-      show_ft += (QStat.point[1]/100);	   
+      show_ft += (QStat.point(1)/100);           
     } else
-      show_ft += (QStat.point[2]/100) + "/" + (QStat.point[1]/100);
+      show_ft += (QStat.point(2)/100) + "/" + (QStat.point(1)/100);
   }
   $("#ft").html(show_ft);
 
-  var permalink = '<a href="?' + gResObj.id_res + '&' + base64encode(gQObj.dora) +
-    '" target="_blank">¤³¤ÎÏÂÎ»¼ê¤Î¥Ñ¡¼¥Ş¥ê¥ó¥¯</a>';
+    var permalink = '<a href="?' + gResObj.result_id() + '&' + base64encode(gQObj.dora) +
+    '" target="_blank">ã“ã®å’Œäº†æ‰‹ã®ãƒ‘ãƒ¼ãƒãƒªãƒ³ã‚¯</a>';
    
   if(gMode.is_levelup){
     var res = "";
-    for(var i=0; i < INIT_SPARE - gCntM; i++) res += "¡ù";
+    for(var i=0; i < INIT_SPARE - gCntM; i++) res += "â˜†";
     $("#survive").html(res);
     $("#clear").html(gCntR + " / " + COND_CLEAR);   
   } else
-    $("#clear").html("ÀµÅúÎ¨: " + gCntR + " / " + (gCntR + gCntM) );
-  $("#result").html( gResObj.result + permalink  );
-  $('#start').val('¼¡(Enter)');
+    $("#clear").html("æ­£ç­”ç‡: " + gCntR + " / " + (gCntR + gCntM) );
+    $("#result").html( gResObj.result_table() + permalink  );
+  $('#start').val('æ¬¡(Enter)');
   $("#tenkey").css( "display", "none" );
   return swc_next;
 }
-////////////////// ½ªÎ»É½¼¨
+////////////////// çµ‚äº†è¡¨ç¤º
 function show_ending(){
   if(!gMode.is_timer || gMode.mode==2) return back_to_top("");
 
@@ -812,10 +800,10 @@ function show_ending(){
 
   if(is_clear){
     var res = "<h2>Game Completed</h2>" +
-      "¼Â¼Á¤ª¤á¤Ç¤È¤¦!<br>(¤â¤¦¾¯¤·ÇÉ¼ê¤ÊÉÁ¼Ì¤Ë¤·¤¿¤¤)";
+      "å®Ÿè³ªãŠã‚ã§ã¨ã†!<br>(ã‚‚ã†å°‘ã—æ´¾æ‰‹ãªæå†™ã«ã—ãŸã„)";
   } else {
     var res = "<h2>Game Over</h2>" + 
-      " ½êÁ§ LEVEL " + gLevel + " »ß¤Ş¤ê¤Ê¤Î¤è!";
+      " æ‰€è©® LEVEL " + gLevel + " æ­¢ã¾ã‚Šãªã®ã‚ˆ!";
   }
   $("#presentation").hide();
   $("#result, #ft_column").html("").css("clear","both");
@@ -826,11 +814,11 @@ function show_ending(){
     $.get("ankorotest.php", {}, back_to_top );
     return false;
   }
-  $('#command').html('Ì¾Á°¤òÆşÎÏ¤·¤Æ¤¯¤À¤µ¤¤¡£');
-  $('#start').val('¥é¥ó¥­¥ó¥°ÅĞÏ¿').css("width", "auto");
+  $('#command').html('åå‰ã‚’å…¥åŠ›ã—ã¦ãã ã•ã„ã€‚');
+  $('#start').val('ãƒ©ãƒ³ã‚­ãƒ³ã‚°ç™»éŒ²').css("width", "auto");
   return true;
 }
-////////////////// ¥Í¥È¥é¥óÅĞÏ¿
+////////////////// ãƒãƒˆãƒ©ãƒ³ç™»éŒ²
 function ranking_submit(){
   var inp  = $("#inp_ans").val();
   if(inp.length==0) return false;
@@ -840,19 +828,19 @@ function ranking_submit(){
   var point = Math.round(sum_r * 100 + ( gCntT * gCntT / sum_r / sum_r ) * 2);
   $.post("ankorotest.php", 
          {"Absolute":(point + "<>" + inp + "<>"+ sum_r + "<>" + sum_q + "<>" + gCntT)}, 
-	 back_to_top );
+         back_to_top );
   return true;
 }
-////////////////// ¥È¥Ã¥×¤ËÌá¤ë
+////////////////// ãƒˆãƒƒãƒ—ã«æˆ»ã‚‹
 function back_to_top(res){
-    $("#command").html("¤ª¤Ä¤«¤ì¤µ¤Ş¤Ç¤·¤¿¡£");
+    $("#command").html("ãŠã¤ã‹ã‚Œã•ã¾ã§ã—ãŸã€‚");
     $("#sidebox").hide();
-    $("#start").val("¥È¥Ã¥×¤ËÌá¤ë");
+    $("#start").val("ãƒˆãƒƒãƒ—ã«æˆ»ã‚‹");
     if(res) $("#ranking").html(res);
     $("#ranking").show();
     return false;
 }
-//////////////// ¥ë¡¼¥ëÉ½¼¨
+//////////////// ãƒ«ãƒ¼ãƒ«è¡¨ç¤º
 function rule_indicate(flag){
   if(flag){
     $("#rule").slideToggle(200);
@@ -862,48 +850,53 @@ function rule_indicate(flag){
     $("#rule").hide();
   }
 }
-//////////////// ¥«¥¦¥ó¥¿³«»Ï
+//////////////// ã‚«ã‚¦ãƒ³ã‚¿é–‹å§‹
 function count_start(sec) {
     gRtime = sec;
     gPsgID = setInterval('showPassage()',1000);
 }
-//////////////// ¥«¥¦¥ó¥¿Ãæ»ß
+//////////////// ã‚«ã‚¦ãƒ³ã‚¿ä¸­æ­¢
 function count_stop() {
     if(gPsgID) clearInterval( gPsgID );
     var ret = gRtime;
     gRtime = 0;
     return ret;
 }
-/////////////// ¥«¥¦¥ó¥È¥À¥¦¥ó
+/////////////// ã‚«ã‚¦ãƒ³ãƒˆãƒ€ã‚¦ãƒ³
 function showPassage() {
     gRtime--;
     $("#count").html(Math.ceil(gRtime));
     if(gRtime <= 0) state_machine();
 }
-/////////////// ÀÖÂÀ»ú¥¿¥°
+/////////////// èµ¤å¤ªå­—ã‚¿ã‚°
 function style_redbold(str){
   //return str;
   return '<span class="redbold">'+str+'</span>';
 }
-/////////////// Ç×²è¥¿¥°
-function hi_tag(hi){
-  var hiname = new Array
-    ("1m","2m","3m","4m","5m","6m","7m","8m","9m",
-     "1p","2p","3p","4p","5p","6p","7p","8p","9p",
-     "1s","2s","3s","4s","5s","6s","7s","8s","9s",
-     "ton","nan","sha","pei","hak","hat","chu"
-     );
-  //return (hi==-1)? "# " : hiname[hi] + " ";
-  var hinamej = new Array
-    ( "°ìèß","Æóèß","»°èß","»Íèß","¸Şèß","Ï»èß","¼·èß","È¬èß","¶åèß",
-      "°ìÅû","ÆóÅû","»°Åû","»ÍÅû","¸ŞÅû","Ï»Åû","¼·Åû","È¬Åû","¶åÅû",
-      "°ìº÷","Æóº÷","»°º÷","»Íº÷","¸Şº÷","Ï»º÷","¼·º÷","È¬º÷","¶åº÷",
-      "Åì","Æî","À¾","ËÌ","Çò","â¤","Ãæ"
-      );
-  if(hi==-1) return '<img src="./haiga/back.gif" width=18 height=24 alt="¢£">';
-  return'<img src="./haiga/' + hiname[hi]+'.gif" width=18 height=24 alt="' + hiname[hi]+ '">';
-}
-/////////////// ¥¯¥¨¥ê¼õ¤±¼è¤ê
+/////////////// ç‰Œç”»ã‚¿ã‚°
+var hi_tag = $J.hitag = function(hi)
+{
+    if (hi < 0 || 34 <= hi) hi = 34;
+
+    var hinamej = [
+        "ä¸€è¬","äºŒè¬","ä¸‰è¬","å››è¬","äº”è¬","å…­è¬","ä¸ƒè¬","å…«è¬","ä¹è¬",
+        "ä¸€ç­’","äºŒç­’","ä¸‰ç­’","å››ç­’","äº”ç­’","å…­ç­’","ä¸ƒç­’","å…«ç­’","ä¹ç­’",
+        "ä¸€ç´¢","äºŒç´¢","ä¸‰ç´¢","å››ç´¢","äº”ç´¢","å…­ç´¢","ä¸ƒç´¢","å…«ç´¢","ä¹ç´¢",
+        "æ±","å—","è¥¿","åŒ—","ç™½","ç™¼","ä¸­"
+    ];
+
+    var x = (hi % 9);
+    var y = (hi - x) / 9;
+    var img = {
+        style: ["left:" + (-x * 18) + 'px', "top:" + (-y * 24) + "px"].join(";"),
+        src: "haiga.png",
+        alt: hinamej[hi] || "â– ",
+    };
+
+    var $img = "<img " + Object.keys(img).map(key => key + "=" + img[key]).join(" ") + ">";
+    return '<span class="tile">' + $img + "</span>";
+};
+/////////////// ã‚¯ã‚¨ãƒªå—ã‘å–ã‚Š
 function getRequest(){
   if(location.search.length > 1){
     var get = new Object();
@@ -913,7 +906,7 @@ function getRequest(){
     return false;
   }
 }
-/////////////// ¥¯¥¨¥ê¥í¡¼¥É
+/////////////// ã‚¯ã‚¨ãƒªãƒ­ãƒ¼ãƒ‰
 function form_load(){
   var c = getRequest();
   var base64list = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';
@@ -921,12 +914,11 @@ function form_load(){
 
   gQObj = new PointQuiz;
   gResObj  = new JangResult();
-  gResObj.set_res_id(c.shift());
+  gResObj.config_show_haishi(false).run(c.shift());
   HandObj = gResObj.HandObj;
-  HandObj.t2hai();
 
-  if( !HandObj.split_into_ments(true) ) return false;
-  gResObj.get_result();
+  if (!HandObj.split(true)) return false;
+  gResObj.run();
   gQObj.QStat = gResObj.CalcObj;
   gQObj.dora  = base64decode(c.shift());
   gQObj.level_det();
@@ -934,11 +926,11 @@ function form_load(){
 
   $("#number").html("<u>DEMO</u><br>Clear: 0");
   $('select#level_select option').remove();
-  $('select#level_select').append($('<option>').html("¥Ç¥â").val("2"));
+  $('select#level_select').append($('<option>').html("ãƒ‡ãƒ¢").val("2"));
 
   return true;
 }
-/////////////// ¥¤¥Ù¥ó¥È¥Ï¥ó¥É¥é
+/////////////// ã‚¤ãƒ™ãƒ³ãƒˆãƒãƒ³ãƒ‰ãƒ©
 $(document).ready( function() {
     var yaku_all = (new HandCalc()).yaku_all;
     var res = "";
@@ -961,14 +953,14 @@ $(document).ready( function() {
     $("#show_rule").click( function(){  rule_indicate(true); } );
     $("#hide_rule").click( function(){  rule_indicate(false); } );
     $("#level_select").change(function(){
-	gMode.mode = $("#level_select").get(0).selectedIndex;
-	if(gMode.mode==0){
-	  $("#titlebox").show();
-	  $("#config").hide();
-	}else {
-	  $("#titlebox").hide();
-	  $("#config").show();
-	}
+        gMode.mode = $("#level_select").get(0).selectedIndex;
+        if(gMode.mode==0){
+          $("#titlebox").show();
+          $("#config").hide();
+        }else {
+          $("#titlebox").hide();
+          $("#config").show();
+        }
     });
 
     $(".calc li").bind( "touchstart",function(){

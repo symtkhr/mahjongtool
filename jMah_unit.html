@@ -78,15 +78,69 @@ $J.hitag = function(hi)
     var $img = "<img " + Object.keys(img).map(key => key + "=" + img[key]).join(" ") + ">";
     return '<span class="tile">' + $img + "</span>";
 };
-window.onload = UnitTest;
+///////// UnitTest
+const unitTest = function() {
+    const ResObj  = new JangResult();
+    const test = [
+        //一翻手
+        {id:"AIAADQJpABNPb", h:2,f:40},
+        {id:"FKAAFQJJIFKKW", h:5,f:20},
+        {id:"BBAAKQJJfEKNY", h:1,f:40},
+        {id:"FBAAKQJhcEKNa", h:1,f:50},
+        //二翻手
+        {id:"FBAAJQJJeADGJ", h:4,f:30},
+        {id:"FAAAaQJJeAGJY", h:3,f:30},
+        {id:"FAAABQJBEBBKT", h:2,f:30},
+        {id:"FIAAWQlcWDMVg", h:5,f:50},
+        {id:"EBAAgHFJRWXdg", h:3,f:25},
+        {id:"FBAAHHDEGHKLM", h:4,f:25},
+        {id:"FAAARQkcgFRbe", h:2,f:50},
+        {id:"FIAAgQkjRFbeg", h:5,f:50},
+        {id:"FIAAfQBsfNXgh", h:4,f:50},
+        {id:"FIAARQkrJARah", h:5,f:60},
+        {id:"CIAAJQpudJSah", h:4,f:90},
+        //三翻手
+        {id:"FIAAEQJbEBBch", h:5,f:30},
+        {id:"CBAAHQJJRFFTT", h:5,f:30},
+        {id:"AJAAAQhhRAAPa", h:5,f:40},
+        {id:"CAAAUQIBRAJSY", h:3,f:30},
+        //清一色
+        {id:"CAAATQJIZSSVY", h:6,f:30},
+        {id:"CAAAZQJJaTTVX", h:8},
+        //役満
+        {id:"CIAAZQkkNLZbd", h:13},
+        {id:"BAAARNb",       h:13},
+        {id:"AIAAhNb",       h:13},
+        {id:"GYAAVQIsXTTZg", h:13},
+        {id:"GAAAIQccIAJRS", h:13},
+        {id:"FAAANQhbdLbce", h:13},
+        {id:"EAAAbQccJbcde", h:13},
+        {id:"GIAAcQuucBIQg", h:13},
+        {id:"GYAAfQjbdcfgh", h:26},
+    ];
+
+    const run = (() => {
+        let v = test.shift();
+        if (!v) return;
+        ResObj.run(v.id);
+        var $head = (v.h == ResObj.CalcObj.han()) &&
+            (!v.f || v.f == ResObj.CalcObj.fu(true)) ?
+            "<div class=test>" : "<div class='test fail'>";
+        document.getElementById("result").innerHTML +=
+            $head + ResObj.result_table() + "</div>";
+        setTimeout(run, 200);
+    });
+
+    run();
+};
 --></script>
 </head>
 
 <body>
 <h1>jMah.jsユニットテスト</h1>
 
-得点計算用ライブラリ<a href="jMah_v130.js">jMah.js</a>のユニットテストページ。
-
+得点計算用ライブラリ<a href="jMah.js">jMah.js</a>のユニットテストページ。
+<button id="start" onclick="unitTest()">テスト開始</button>
 <hr style="clear:both;">
 <div id="result" style="display:flex; flex-wrap: wrap;"></div>
 

@@ -649,7 +649,7 @@ var ask_finish = function() {
 function user_make_hand(yamahi){
   $(":button#clear, :button#sort, :button#start").show();
   //$("#message").html("Make a tingpai hand by picking out of the dealt 25 tiles.");
-  $("#message").html("配牌25枚から13枚を選んで聴牌形をつくってください。(<span id='resttime'>180</span>秒)");
+  $("#message").html("配牌25枚から13枚を選んで聴牌形をつくってください。(<span id='resttime'>100</span>秒)");
   $("#dealt, #handset").html("");
   var tehai = new Array();
   for(var i=0; i<yamahi.length; i++ ){
@@ -864,7 +864,7 @@ var state_machine = function() {
       for(var i=0; i<3; i++) gPlayer[i].make_hand();
       stState = STATE.MAKE_HAND;
       swWait  = WAIT.FORTIME;
-      stTime = 180;
+      stTime = 100;
       break;
     case STATE.MAKE_HAND:
       stTime--;
